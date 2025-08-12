@@ -72,7 +72,8 @@ TexCoord &texCoords = *reinterpret_cast<TexCoord *>(Offsets::CONST_TEX_COORDS);
 C3Vector &normal = *reinterpret_cast<C3Vector *>(Offsets::CONST_NORMAL_VEC3);
 unsigned short *vertIndices = reinterpret_cast<unsigned short *>(Offsets::CONST_VERT_INDICES);
 
-void RegisterLuaFunction(const char *name, int(__cdecl *function)(void *L), uintptr_t caveAddress) {
+void RegisterLuaFunction(const char *name, int(__fastcall *function)(void *L),
+                         uintptr_t caveAddress) {
     constexpr uint8_t trampoline[] = {
         0xB8, 0x00, 0x00, 0x00, 0x00, // mov eax, 0x00000000
         0xFF, 0xE0                    // jmp eax

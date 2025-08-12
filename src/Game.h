@@ -189,7 +189,7 @@ using lua_pushnumber_t = void(__fastcall *)(void *L, double value);
 using lua_isstring_t = bool(__fastcall *)(void *L, int index);
 using lua_tostring_t = const char *(__fastcall *)(void *L, int index);
 using lua_pushstring_t = void(__fastcall *)(void *L, const char *);
-using lua_error_t = void(__cdecl *)(void *L, const char *);
+using lua_error_t = void(__fastcall *)(void *L, const char *);
 
 extern const lua_pushnil_t PushNil;
 extern const lua_isnumber_t IsNumber;
@@ -202,7 +202,7 @@ extern const lua_error_t Error;
 } // namespace Lua
 
 using FrameScript_RegisterFunction = void(__fastcall *)(const char *name, uintptr_t func);
-using LoadScriptFunctions_t = void(__stdcall *)();
+using LoadScriptFunctions_t = void(__fastcall *)();
 using GetGUIDFromName_t = uint64_t(__fastcall *)(const char *unitName);
 using ClntObjMgrObjectPtr_t = Game::CGObject_C *(__fastcall *)(TYPE_MASK typeMask,
                                                                const char *debugMessage,
@@ -244,7 +244,8 @@ extern const GxPrimUnlockVertexPtrs_t GxPrimUnlockVertexPtrs;
 extern const TextureCreate_t TextureCreate;
 extern const WorldPosToMinimapFrameCoords_t WorldPosToMinimapFrameCoords;
 
-void RegisterLuaFunction(const char *name, int(__cdecl *function)(void *L), uintptr_t caveAddress);
+void RegisterLuaFunction(const char *name, int(__fastcall *function)(void *L),
+                         uintptr_t caveAddress);
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale);
 
 extern C3Vector *s_blipVertices;

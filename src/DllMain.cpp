@@ -52,7 +52,7 @@ static bool IsValidFilename(const char *name) {
     return name && name[0] != '\0' && strpbrk(name, "<>:\"/\\|?*") == nullptr;
 }
 
-static int __cdecl Script_WriteFile(void *L) {
+static int __fastcall Script_WriteFile(void *L) {
     if (!Game::Lua::IsString(L, 1) || !Game::Lua::IsString(L, 2) || !Game::Lua::IsString(L, 3)) {
         Game::Lua::Error(L, "Usage: WriteFile(filename, mode, content)");
         return 0;
@@ -94,7 +94,7 @@ static int __cdecl Script_WriteFile(void *L) {
     return 0;
 }
 
-static int __cdecl Script_ReadFile(void *L) {
+static int __fastcall Script_ReadFile(void *L) {
     if (!Game::Lua::IsString(L, 1)) {
         Game::Lua::Error(L, "Usage: ReadFile(filename)");
         return 0;
@@ -122,7 +122,7 @@ static int __cdecl Script_ReadFile(void *L) {
     return 1;
 }
 
-static int __cdecl Script_SetUnitBlip(void *L) {
+static int __fastcall Script_SetUnitBlip(void *L) {
     if (!Game::Lua::IsString(L, 1)) {
         Game::Lua::Error(L, "Usage: SetUnitBlip(unit [, texture [, scale]])");
         return 0;
@@ -218,7 +218,7 @@ static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnI
     }
 }
 
-void __stdcall LoadScriptFunctions_h() {
+void __fastcall LoadScriptFunctions_h() {
     LoadScriptFunctions_o();
     // TODO: Disable invalid function pointer check and directly register functions
     Game::RegisterLuaFunction("WriteFile", &Script_WriteFile, Offsets::CAVE_WRITE_FILE);
