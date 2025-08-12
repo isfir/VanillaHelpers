@@ -13,6 +13,7 @@ The library registers these Lua functions:
 
 ```lua
 WriteFile(filename, mode, content)
+content = ReadFile(filename)
 SetUnitBlip(unit [, texture [, scale]])
 ```
 
