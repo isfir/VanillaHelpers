@@ -212,12 +212,15 @@ static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnI
             continue;
         const auto &trackedUnitBlip = it->second;
 
+        // TODO: Check how the original function is putting unit name on blips when mouseovering
+        // them
         Game::DrawMinimapTexture(trackedUnitBlip.texture, minimapPos, trackedUnitBlip.scale);
     }
 }
 
 void __stdcall LoadScriptFunctions_h() {
     LoadScriptFunctions_o();
+    // TODO: Disable invalid function pointer check and directly register functions
     Game::RegisterLuaFunction("WriteFile", &Script_WriteFile, Offsets::CAVE_WRITE_FILE);
     Game::RegisterLuaFunction("ReadFile", &Script_ReadFile, Offsets::CAVE_READ_FILE);
     Game::RegisterLuaFunction("SetUnitBlip", &Script_SetUnitBlip, Offsets::CAVE_SET_UNIT_BLIPS);
