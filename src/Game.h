@@ -189,7 +189,7 @@ using lua_pushnumber_t = void(__fastcall *)(void *L, double value);
 using lua_isstring_t = bool(__fastcall *)(void *L, int index);
 using lua_tostring_t = const char *(__fastcall *)(void *L, int index);
 using lua_pushstring_t = void(__fastcall *)(void *L, const char *);
-using lua_error_t = void(__fastcall *)(void *L, const char *);
+using lua_error_t = void(__cdecl *)(void *L, const char *);
 
 extern const lua_pushnil_t PushNil;
 extern const lua_isnumber_t IsNumber;
