@@ -86,8 +86,10 @@ struct TSLink {
 struct CGObject_C;
 
 struct CGObject_C_VfTable {
-    void *unk[5];
+    void *unk0[5];
     C3Vector *(__thiscall *GetPosition)(CGObject_C *, C3Vector *);
+    void *unk1[22];
+    const char *(__thiscall *GetName)(CGObject_C *);
 };
 
 struct CGObject_C {
@@ -232,6 +234,7 @@ using ObjectEnumProc_t = int(__fastcall *)(MINIMAPINFO *info, uint64_t guid);
 using ClntObjMgrEnumVisibleObjectsCallback_t = int(__thiscall *)(void *context, uint64_t guid);
 using ClntObjMgrEnumVisibleObjects_t =
     int(__fastcall *)(ClntObjMgrEnumVisibleObjectsCallback_t callback, void *context);
+using SStrPack_t = int(__stdcall *)(char *dst, const char *src, int cap);
 
 extern const GetGUIDFromName_t GetGUIDFromName;
 extern const ClntObjMgrObjectPtr_t ClntObjMgrObjectPtr;
@@ -243,6 +246,7 @@ extern const GxPrimDrawElements_t GxPrimDrawElements;
 extern const GxPrimUnlockVertexPtrs_t GxPrimUnlockVertexPtrs;
 extern const TextureCreate_t TextureCreate;
 extern const WorldPosToMinimapFrameCoords_t WorldPosToMinimapFrameCoords;
+extern const SStrPack_t SStrPack;
 
 void RegisterLuaFunction(const char *name, int(__fastcall *function)(void *L),
                          uintptr_t caveAddress);
@@ -252,5 +256,6 @@ extern C3Vector *s_blipVertices;
 extern TexCoord &texCoords;
 extern C3Vector &normal;
 extern unsigned short *vertIndices;
+extern const float &BLIP_HALF;
 
 } // namespace Game

@@ -49,6 +49,7 @@ const TextureCreate_t TextureCreate =
 const WorldPosToMinimapFrameCoords_t WorldPosToMinimapFrameCoords =
     reinterpret_cast<WorldPosToMinimapFrameCoords_t>(
         Offsets::FUN_WORLD_POS_TO_MINIMAP_FRAME_COORDS);
+const SStrPack_t SStrPack = reinterpret_cast<SStrPack_t>(Offsets::FUN_S_STR_PACK);
 
 CStatus::CStatus()
     : vftable(reinterpret_cast<void *>(Offsets::VFTABLE_CSTATUS)), m_unk(8),
@@ -71,6 +72,7 @@ C3Vector *s_blipVertices = reinterpret_cast<C3Vector *>(Offsets::CONST_BLIP_VERT
 TexCoord &texCoords = *reinterpret_cast<TexCoord *>(Offsets::CONST_TEX_COORDS);
 C3Vector &normal = *reinterpret_cast<C3Vector *>(Offsets::CONST_NORMAL_VEC3);
 unsigned short *vertIndices = reinterpret_cast<unsigned short *>(Offsets::CONST_VERT_INDICES);
+const float &BLIP_HALF = *reinterpret_cast<float *>(Offsets::CONST_BLIP_HALF);
 
 void RegisterLuaFunction(const char *name, int(__fastcall *function)(void *L),
                          uintptr_t caveAddress) {

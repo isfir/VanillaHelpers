@@ -22,6 +22,7 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include <windows.h>
 
 #define HOOK_FUNCTION(offset, hook, original)                                                      \
@@ -38,15 +39,38 @@ static Game::LoadScriptFunctions_t LoadScriptFunctions_o = nullptr;
 static Game::RenderObjectBlips_t RenderObjectBlips_o = nullptr;
 static Game::ObjectEnumProc_t ObjectEnumProc_o = nullptr;
 static Game::ClntObjMgrEnumVisibleObjects_t ClntObjMgrEnumVisibleObjects_o = nullptr;
+static void *OnLayerTrackUpdate_ChangedGate_o = nullptr;
+static void *OnLayerTrackUpdate_PreShowGate_o = nullptr;
+static void *OnLayerTrackUpdate_AppendToTooltipBuffer_o = nullptr;
 
-struct TrackedUnit {
+struct TrackedUnitBlip {
     Game::HTEXTURE__ *texture;
     float scale;
 };
 
-static std::unordered_map<uint64_t, TrackedUnit> g_trackedUnitsBlip;
-static std::unordered_map<uint64_t, Game::C2Vector> g_trackedUnitsMinimapPos;
+struct TrackedUnitData {
+    Game::C2Vector minimapPos;
+    bool isInDifferentArea;
+    std::string name;
+};
+
+struct BlipHoverEntry {
+    uint64_t guid;
+    std::string name;
+    bool gray;
+};
+
+struct BlipHoverState {
+    bool changed = false;
+    bool nonEmpty = false;
+    uint64_t hash = 0;
+    std::vector<BlipHoverEntry> hits;
+};
+
 static std::unordered_map<std::string, Game::HTEXTURE__ *> g_textureCache;
+static std::unordered_map<uint64_t, TrackedUnitBlip> g_trackedUnitsBlip;
+static std::unordered_map<uint64_t, TrackedUnitData> g_trackedUnitsData;
+static BlipHoverState g_blipHoverState;
 
 static bool IsValidFilename(const char *name) {
     return name && name[0] != '\0' && strpbrk(name, "<>:\"/\\|?*") == nullptr;
@@ -198,7 +222,7 @@ static void TrackUnit(Game::MINIMAPINFO *info, uint64_t guid) {
         // TODO: Add isInDifferentArea info to support graying blip, this can be obtained by
         // comparing info->unk1 (something like player area ID) and the output of the function at
         // 0x670540
-        g_trackedUnitsMinimapPos[guid] = minimapPos;
+        g_trackedUnitsData[guid] = {minimapPos, false, unitptr->vftable->GetName(unitptr)};
     }
 }
 
@@ -206,7 +230,7 @@ static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnI
     // We are gathering the position in ObjectEnumProc because it is rate limited to avoid spamming
     // expensive calls. To do it in RenderObjectBlips, we can use DNInfo for current position,
     // MinimapGetWorldRadius() for world radius and minimapPtr +0x7C for layout scale.
-    for (const auto &[guid, minimapPos] : g_trackedUnitsMinimapPos) {
+    for (const auto &[guid, trackedUnitData] : g_trackedUnitsData) {
         const auto it = g_trackedUnitsBlip.find(guid);
         if (it == g_trackedUnitsBlip.end())
             continue;
@@ -214,11 +238,70 @@ static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnI
 
         // TODO: Check how the original function is putting unit name on blips when mouseovering
         // them
-        Game::DrawMinimapTexture(trackedUnitBlip.texture, minimapPos, trackedUnitBlip.scale);
+        Game::DrawMinimapTexture(trackedUnitBlip.texture, trackedUnitData.minimapPos,
+                                 trackedUnitBlip.scale);
     }
 }
 
-void __fastcall LoadScriptFunctions_h() {
+static void UpdateCustomHover(Game::C2Vector mouse, Game::C2Vector offset) {
+    std::vector<BlipHoverEntry> now;
+    now.reserve(g_trackedUnitsData.size());
+
+    for (const auto &[guid, unit] : g_trackedUnitsData) {
+        const auto it = g_trackedUnitsBlip.find(guid);
+        if (it == g_trackedUnitsBlip.end())
+            continue;
+        const auto &bl = it->second;
+
+        const float half = Game::BLIP_HALF * bl.scale;
+        const float px = unit.minimapPos.x + offset.x;
+        const float py = unit.minimapPos.y + offset.y;
+
+        if (fabsf(mouse.x - px) <= half && fabsf(mouse.y - py) <= half) {
+            now.push_back({guid, unit.name, unit.isInDifferentArea});
+        }
+    }
+
+    std::sort(now.begin(), now.end(), [](const auto &a, const auto &b) { return a.guid < b.guid; });
+
+    // FNV-1a hash
+    uint64_t h = 14695981039346656037ULL;
+    auto mix = [&](uint64_t v) {
+        h ^= v;
+        h *= 1099511628211ULL;
+    };
+    for (const auto &hit : now) {
+        mix(hit.guid);
+        mix(hit.gray ? 1ULL : 0ULL);
+        mix(std::hash<std::string_view>{}(hit.name));
+    }
+
+    g_blipHoverState.nonEmpty = !now.empty();
+    const bool changed = (h != g_blipHoverState.hash);
+    g_blipHoverState.changed = changed;
+    if (changed) {
+        g_blipHoverState.hash = h;
+        g_blipHoverState.hits.swap(now);
+    }
+}
+
+static void WriteToMinimapTooltip(char *tooltipText) {
+    if (g_blipHoverState.hits.empty())
+        return;
+
+    for (const auto &hit : g_blipHoverState.hits) {
+        if (hit.gray) {
+            Game::SStrPack(tooltipText, "|cffb0b0b0", 0x400);
+            Game::SStrPack(tooltipText, hit.name.c_str(), 0x400);
+            Game::SStrPack(tooltipText, "|r\n", 0x400);
+        } else {
+            Game::SStrPack(tooltipText, hit.name.c_str(), 0x400);
+            Game::SStrPack(tooltipText, "\n", 0x400);
+        }
+    }
+}
+
+static void __fastcall LoadScriptFunctions_h() {
     LoadScriptFunctions_o();
     // TODO: Disable invalid function pointer check and directly register functions
     Game::RegisterLuaFunction("WriteFile", &Script_WriteFile, Offsets::CAVE_WRITE_FILE);
@@ -226,26 +309,80 @@ void __fastcall LoadScriptFunctions_h() {
     Game::RegisterLuaFunction("SetUnitBlip", &Script_SetUnitBlip, Offsets::CAVE_SET_UNIT_BLIPS);
 }
 
-int __fastcall ClntObjMgrEnumVisibleObjects_h(Game::ClntObjMgrEnumVisibleObjectsCallback_t callback,
-                                              void *context) {
+static int __fastcall ClntObjMgrEnumVisibleObjects_h(
+    Game::ClntObjMgrEnumVisibleObjectsCallback_t callback, void *context) {
     if (reinterpret_cast<uintptr_t>(callback) == Offsets::FUN_OBJECT_ENUM_PROC) {
-        g_trackedUnitsMinimapPos.clear();
+        g_trackedUnitsData.clear();
     }
     return ClntObjMgrEnumVisibleObjects_o(callback, context);
 }
 
-int __fastcall ObjectEnumProc_h(Game::MINIMAPINFO *info, uint64_t guid) {
+static int __fastcall ObjectEnumProc_h(Game::MINIMAPINFO *info, uint64_t guid) {
     // TODO: Check for tracked units here to avoid calling the original ObjectEnumProc
     // on units we're already tracking
     TrackUnit(info, guid);
     return ObjectEnumProc_o(info, guid);
 }
 
-void __fastcall RenderObjectBlips_h(Game::CGMinimapFrame *thisptr, void *edx,
-                                    Game::DNInfo *dnInfo) {
+static void __fastcall RenderObjectBlips_h(Game::CGMinimapFrame *thisptr, void * /*edx*/,
+                                           Game::DNInfo *dnInfo) {
     RenderObjectBlips_o(thisptr, dnInfo);
     DrawTrackedBlips(thisptr, dnInfo);
 }
+
+// Right before the early-out check uses ECX to decide if anything changed
+static void __declspec(naked) OnLayerTrackUpdate_ChangedGate_h() {
+    __asm {
+        pushad
+
+        mov  eax, [ebx+0x8] // param pointer
+        push dword ptr [ebp-0x40] // offsetY
+        push dword ptr [ebp-0x3C] // offsetX
+        push dword ptr [eax+0x28] // mouseY
+        push dword ptr [eax+0x24] // mouseX
+        call UpdateCustomHover
+        add  esp, 16
+
+        popad
+
+            // If our set changed, force ECX=1 (stock "changed" flag)
+        cmp  byte ptr [g_blipHoverState.changed], 0
+        je   short no_custom_change
+        mov  ecx, 1
+    no_custom_change:
+
+        jmp  dword ptr [OnLayerTrackUpdate_ChangedGate_o]
+    }
+}
+
+// Right before the branch that decides whether to build/update the tooltip text
+static void __declspec(naked) OnLayerTrackUpdate_PreShowGate_h() {
+    __asm {
+        // If we have any changes, force EDX=1 so the stock code builds the tooltip
+        cmp  byte ptr [g_blipHoverState.changed], 0
+        je   short no_set_edx
+        mov  edx, 1
+    no_set_edx:
+
+        jmp  dword ptr [OnLayerTrackUpdate_PreShowGate_o]
+    }
+}
+
+// After the scratch tooltip buffer is initialized, before original blips text are appended
+static void __declspec(naked) OnLayerTrackUpdate_AppendToTooltipBuffer_h() {
+    __asm {
+        // Append into stock scratch buffer [EBP-0x468]
+        pushad
+        lea  eax, [ebp-0x468]
+        push eax
+        call WriteToMinimapTooltip
+        add  esp, 4
+        popad
+
+        jmp  dword ptr [OnLayerTrackUpdate_AppendToTooltipBuffer_o]
+    }
+}
+
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
     if (reason == DLL_PROCESS_ATTACH) {
@@ -260,6 +397,13 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
                       ClntObjMgrEnumVisibleObjects_h, ClntObjMgrEnumVisibleObjects_o);
         HOOK_FUNCTION(Offsets::FUN_OBJECT_ENUM_PROC, ObjectEnumProc_h, ObjectEnumProc_o);
         HOOK_FUNCTION(Offsets::FUN_RENDER_OBJECT_BLIP, RenderObjectBlips_h, RenderObjectBlips_o);
+        HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_CHANGED_GATE,
+                      OnLayerTrackUpdate_ChangedGate_h, OnLayerTrackUpdate_ChangedGate_o);
+        HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_PRE_SHOW_GATE,
+                      OnLayerTrackUpdate_PreShowGate_h, OnLayerTrackUpdate_PreShowGate_o);
+        HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_APPEND_TO_TOOLTIP_BUFFER,
+                      OnLayerTrackUpdate_AppendToTooltipBuffer_h,
+                      OnLayerTrackUpdate_AppendToTooltipBuffer_o);
 
     } else if (reason == DLL_PROCESS_DETACH) {
         MH_Uninitialize();
