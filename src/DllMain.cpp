@@ -301,12 +301,14 @@ static void WriteToMinimapTooltip(char *tooltipText) {
     }
 }
 
+static void __fastcall InvalidFunctionPtrCheck_h() {}
+
 static void __fastcall LoadScriptFunctions_h() {
     LoadScriptFunctions_o();
-    // TODO: Disable invalid function pointer check and directly register functions
-    Game::RegisterLuaFunction("WriteFile", &Script_WriteFile, Offsets::CAVE_WRITE_FILE);
-    Game::RegisterLuaFunction("ReadFile", &Script_ReadFile, Offsets::CAVE_READ_FILE);
-    Game::RegisterLuaFunction("SetUnitBlip", &Script_SetUnitBlip, Offsets::CAVE_SET_UNIT_BLIPS);
+    Game::FrameScript_RegisterFunction("WriteFile", reinterpret_cast<uintptr_t>(&Script_WriteFile));
+    Game::FrameScript_RegisterFunction("ReadFile", reinterpret_cast<uintptr_t>(&Script_ReadFile));
+    Game::FrameScript_RegisterFunction("SetUnitBlip",
+                                       reinterpret_cast<uintptr_t>(&Script_SetUnitBlip));
 }
 
 static int __fastcall ClntObjMgrEnumVisibleObjects_h(
@@ -383,12 +385,17 @@ static void __declspec(naked) OnLayerTrackUpdate_AppendToTooltipBuffer_h() {
     }
 }
 
-
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
 
         if (MH_Initialize() != MH_OK)
+            return FALSE;
+
+        auto *target = reinterpret_cast<LPVOID>(Offsets::FUN_INVALID_FUNCTION_PTR_CHECK);
+        if (MH_CreateHook(target, static_cast<LPVOID>(InvalidFunctionPtrCheck_h), nullptr) != MH_OK)
+            return FALSE;
+        if (MH_EnableHook(target) != MH_OK)
             return FALSE;
 
         HOOK_FUNCTION(Offsets::FUN_LOAD_SCRIPT_FUNCTIONS, LoadScriptFunctions_h,

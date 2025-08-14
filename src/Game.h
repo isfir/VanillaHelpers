@@ -203,7 +203,7 @@ extern const lua_pushstring_t PushString;
 extern const lua_error_t Error;
 } // namespace Lua
 
-using FrameScript_RegisterFunction = void(__fastcall *)(const char *name, uintptr_t func);
+using FrameScript_RegisterFunction_t = void(__fastcall *)(const char *name, uintptr_t func);
 using LoadScriptFunctions_t = void(__fastcall *)();
 using GetGUIDFromName_t = uint64_t(__fastcall *)(const char *unitName);
 using ClntObjMgrObjectPtr_t = Game::CGObject_C *(__fastcall *)(TYPE_MASK typeMask,
@@ -235,7 +235,9 @@ using ClntObjMgrEnumVisibleObjectsCallback_t = int(__thiscall *)(void *context, 
 using ClntObjMgrEnumVisibleObjects_t =
     int(__fastcall *)(ClntObjMgrEnumVisibleObjectsCallback_t callback, void *context);
 using SStrPack_t = int(__stdcall *)(char *dst, const char *src, int cap);
+using InvalidFunctionPtrCheck_t = void(__fastcall *)(void *target);
 
+extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;
 extern const ClntObjMgrObjectPtr_t ClntObjMgrObjectPtr;
 extern const RenderObjectBlips_t RenderObjectBlips;
@@ -248,8 +250,6 @@ extern const TextureCreate_t TextureCreate;
 extern const WorldPosToMinimapFrameCoords_t WorldPosToMinimapFrameCoords;
 extern const SStrPack_t SStrPack;
 
-void RegisterLuaFunction(const char *name, int(__fastcall *function)(void *L),
-                         uintptr_t caveAddress);
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale);
 
 extern C3Vector *s_blipVertices;

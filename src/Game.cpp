@@ -29,6 +29,8 @@ const lua_pushstring_t PushString = reinterpret_cast<lua_pushstring_t>(Offsets::
 const lua_error_t Error = reinterpret_cast<lua_error_t>(Offsets::LUA_ERROR);
 } // namespace Lua
 
+const FrameScript_RegisterFunction_t FrameScript_RegisterFunction =
+    reinterpret_cast<FrameScript_RegisterFunction_t>(Offsets::FUN_REGISTER_LUA_FUNCTION);
 const GetGUIDFromName_t GetGUIDFromName =
     reinterpret_cast<GetGUIDFromName_t>(Offsets::FUN_GET_GUID_FROM_NAME);
 const ClntObjMgrObjectPtr_t ClntObjMgrObjectPtr =
@@ -73,31 +75,6 @@ TexCoord &texCoords = *reinterpret_cast<TexCoord *>(Offsets::CONST_TEX_COORDS);
 C3Vector &normal = *reinterpret_cast<C3Vector *>(Offsets::CONST_NORMAL_VEC3);
 unsigned short *vertIndices = reinterpret_cast<unsigned short *>(Offsets::CONST_VERT_INDICES);
 const float &BLIP_HALF = *reinterpret_cast<float *>(Offsets::CONST_BLIP_HALF);
-
-void RegisterLuaFunction(const char *name, int(__fastcall *function)(void *L),
-                         uintptr_t caveAddress) {
-    constexpr uint8_t trampoline[] = {
-        0xB8, 0x00, 0x00, 0x00, 0x00, // mov eax, 0x00000000
-        0xFF, 0xE0                    // jmp eax
-    };
-
-    DWORD oldProtect = 0;
-    uint8_t patchedTrampoline[sizeof(trampoline)];
-    memcpy(patchedTrampoline, trampoline, sizeof(trampoline));
-
-    const auto funcAddr = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(function));
-    memcpy(&patchedTrampoline[1], &funcAddr, sizeof(funcAddr));
-
-    VirtualProtect(reinterpret_cast<LPVOID>(caveAddress), sizeof(patchedTrampoline),
-                   PAGE_EXECUTE_READWRITE, &oldProtect);
-    memcpy(reinterpret_cast<void *>(caveAddress), patchedTrampoline, sizeof(patchedTrampoline));
-    VirtualProtect(reinterpret_cast<LPVOID>(caveAddress), sizeof(patchedTrampoline), oldProtect,
-                   &oldProtect);
-
-    auto registerFunction =
-        reinterpret_cast<FrameScript_RegisterFunction>(Offsets::FUN_REGISTER_LUA_FUNCTION);
-    registerFunction(name, caveAddress);
-}
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale) {
     const CImVector color = {0xFF, 0xFF, 0xFF, 0xFF}; // White
