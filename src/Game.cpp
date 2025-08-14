@@ -14,8 +14,6 @@
 #include "Game.h"
 #include "Offsets.h"
 
-#include <windows.h>
-
 namespace Game {
 
 namespace Lua {
