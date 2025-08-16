@@ -107,15 +107,16 @@ static void TrackObject(Game::MINIMAPINFO *info, Game::CGObject_C *objectptr, ui
         {guid, minimapPos, false, objectptr->vftable->GetName(objectptr), blip});
 }
 
-static void CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
+static bool CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
     const auto unitIt = g_trackedUnitBlips.find(guid);
     if (unitIt != g_trackedUnitBlips.end()) {
         Game::CGObject_C *unitptr =
             Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_UNIT, nullptr, guid, 0);
         if (unitptr != nullptr) {
             TrackObject(info, unitptr, guid, unitIt->second);
+            return TRUE;
         }
-        return;
+        return FALSE;
     }
 
     uint32_t typemask = 0;
@@ -126,11 +127,11 @@ static void CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
         typemask = typemask | Game::TYPE_MASK::TYPEMASK_GAMEOBJECT;
     }
     if (typemask == 0)
-        return;
+        return FALSE;
 
     Game::CGObject_C *objptr = Game::ClntObjMgrObjectPtr(typemask, nullptr, guid, 0);
     if (objptr == nullptr)
-        return;
+        return FALSE;
 
     if (objptr->m_objectType == Game::OBJECT_TYPE::UNIT) {
         const auto *unitData = reinterpret_cast<Game::CGUnitData *>(objptr->m_data);
@@ -148,6 +149,7 @@ static void CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
         }
         if (matchedFlag != 0) {
             TrackObject(info, objptr, guid, blip);
+            return TRUE;
         }
     } else if (objptr->m_objectType == Game::OBJECT_TYPE::GAMEOBJECT) {
         const auto *gameObjectData = reinterpret_cast<Game::CGGameObjectData *>(objptr->m_data);
@@ -158,9 +160,11 @@ static void CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
             if (gameObjectData->m_type != Game::GAMEOBJECT_TYPES::GAMEOBJECT_TYPE_QUESTGIVER ||
                 gameObjectData->m_displayID == 6424) {
                 TrackObject(info, objptr, guid, it->second);
+                return TRUE;
             }
         }
     }
+    return FALSE;
 }
 
 static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnInfo) {
@@ -234,10 +238,9 @@ static int __fastcall ClntObjMgrEnumVisibleObjects_h(
 }
 
 static int __fastcall ObjectEnumProc_h(Game::MINIMAPINFO *info, uint64_t guid) {
-    // TODO: Check for tracked units here to avoid calling the original ObjectEnumProc
-    // on units we're already tracking
-    CheckObject(info, guid);
-    return ObjectEnumProc_o(info, guid);
+    if (!CheckObject(info, guid))
+        ObjectEnumProc_o(info, guid);
+    return 1; // The original function always seems to return 1
 }
 
 static void __fastcall RenderObjectBlips_h(Game::CGMinimapFrame *thisptr, void * /*edx*/,
