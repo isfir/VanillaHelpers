@@ -40,15 +40,17 @@ static void *OnLayerTrackUpdate_ChangedGate_o = nullptr;
 static void *OnLayerTrackUpdate_PreShowGate_o = nullptr;
 static void *OnLayerTrackUpdate_AppendToTooltipBuffer_o = nullptr;
 
-struct TrackedUnitBlip {
+struct Blip {
     Game::HTEXTURE__ *texture;
     float scale;
 };
 
-struct TrackedUnitData {
+struct TrackedObjectData {
+    uint64_t guid;
     Game::C2Vector minimapPos;
     bool isInDifferentArea;
     std::string name;
+    Blip blip;
 };
 
 struct BlipHoverEntry {
@@ -65,33 +67,99 @@ struct BlipHoverState {
 };
 
 static std::unordered_map<std::string, Game::HTEXTURE__ *> g_textureCache;
-static std::unordered_map<uint64_t, TrackedUnitBlip> g_trackedUnitsBlip;
-static std::unordered_map<uint64_t, TrackedUnitData> g_trackedUnitsData;
+static std::unordered_map<uint64_t, Blip> g_trackedUnitBlips;
+static std::unordered_map<uint32_t, Blip> g_trackedUnitFlagsBlips;
+static std::unordered_map<uint32_t, Blip> g_trackedGameObjectTypesBlips;
+static std::vector<TrackedObjectData> g_trackedObjectsData;
 static BlipHoverState g_blipHoverState;
 
-static void TrackUnit(Game::MINIMAPINFO *info, uint64_t guid) {
-    const auto it = g_trackedUnitsBlip.find(guid);
-    if (it == g_trackedUnitsBlip.end())
+static const std::unordered_map<std::string, uint32_t> g_stringToFlag = {
+    {"auctioneer", Game::UNIT_NPC_FLAG_AUCTIONEER},
+    {"banker", Game::UNIT_NPC_FLAG_BANKER},
+    {"flight master", Game::UNIT_NPC_FLAG_FLIGHTMASTER},
+    {"innkeeper", Game::UNIT_NPC_FLAG_INNKEEPER},
+    {"repair", Game::UNIT_NPC_FLAG_REPAIR},
+    {"summoning ritual unit", Game::UNIT_NPC_FLAG_SUMMONING_RITUAL},
+    {"trainer", Game::UNIT_NPC_FLAG_TRAINER},
+    {"vendor", Game::UNIT_NPC_FLAG_VENDOR}};
+
+static const std::unordered_map<std::string, uint32_t> g_stringToGameObjectType = {
+    {"brainwashing", Game::GAMEOBJECT_TYPE_QUESTGIVER}, // Will be further filtered
+    {"mailbox", Game::GAMEOBJECT_TYPE_MAILBOX},
+    {"summoning ritual object", Game::GAMEOBJECT_TYPE_SUMMONING_RITUAL},
+};
+
+static void TrackObject(Game::MINIMAPINFO *info, Game::CGObject_C *objectptr, uint64_t guid,
+                        Blip blip) {
+    Game::C2Vector minimapPos;
+    Game::C3Vector unitPos;
+
+    objectptr->vftable->GetPosition(objectptr, &unitPos);
+    float unkScale = info->minimapFrame->FrameScriptPart.vftable->GetUnkScale(
+        &info->minimapFrame->FrameScriptPart);
+
+    Game::WorldPosToMinimapFrameCoords(&minimapPos, nullptr, info->currentPos, info->radius,
+                                       unitPos.x, unitPos.y, info->layoutScale, unkScale);
+
+    // TODO: Add isInDifferentArea info to support graying blip, this can be obtained by comparing
+    // info->unk1 (something like player area ID) and the output of the function at 0x670540
+    g_trackedObjectsData.push_back(
+        {guid, minimapPos, false, objectptr->vftable->GetName(objectptr), blip});
+}
+
+static void CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
+    const auto unitIt = g_trackedUnitBlips.find(guid);
+    if (unitIt != g_trackedUnitBlips.end()) {
+        Game::CGObject_C *unitptr =
+            Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_UNIT, nullptr, guid, 0);
+        if (unitptr != nullptr) {
+            TrackObject(info, unitptr, guid, unitIt->second);
+        }
+        return;
+    }
+
+    uint32_t typemask = 0;
+    if (!g_trackedUnitFlagsBlips.empty()) {
+        typemask = typemask | Game::TYPE_MASK::TYPEMASK_UNIT;
+    }
+    if (!g_trackedGameObjectTypesBlips.empty()) {
+        typemask = typemask | Game::TYPE_MASK::TYPEMASK_GAMEOBJECT;
+    }
+    if (typemask == 0)
         return;
 
-    Game::CGObject_C *unitptr = Game::ClntObjMgrObjectPtr(Game::TYPEMASK_UNIT, nullptr, guid, 0);
+    Game::CGObject_C *objptr = Game::ClntObjMgrObjectPtr(typemask, nullptr, guid, 0);
+    if (objptr == nullptr)
+        return;
 
-    if (unitptr != nullptr) {
-        Game::C2Vector minimapPos = {0, 0};
+    if (objptr->m_objectType == Game::OBJECT_TYPE::UNIT) {
+        const auto *unitData = reinterpret_cast<Game::CGUnitData *>(objptr->m_data);
+        uint32_t matchedFlag = 0;
+        Blip blip;
 
-        Game::C3Vector unitPos{};
-        unitptr->vftable->GetPosition(unitptr, &unitPos);
+        // Units can have multiple flags (ex: repair and vendor), we find the strongest one
+        for (const auto &[flag, tracked] : g_trackedUnitFlagsBlips) {
+            if (unitData->m_npcFlags & flag) {
+                if (flag > matchedFlag) {
+                    matchedFlag = flag;
+                    blip = tracked;
+                }
+            }
+        }
+        if (matchedFlag != 0) {
+            TrackObject(info, objptr, guid, blip);
+        }
+    } else if (objptr->m_objectType == Game::OBJECT_TYPE::GAMEOBJECT) {
+        const auto *gameObjectData = reinterpret_cast<Game::CGGameObjectData *>(objptr->m_data);
 
-        float unkScale = info->minimapFrame->FrameScriptPart.vftable->GetUnkScale(
-            &info->minimapFrame->FrameScriptPart);
-
-        Game::WorldPosToMinimapFrameCoords(&minimapPos, nullptr, info->currentPos, info->radius,
-                                           unitPos.x, unitPos.y, info->layoutScale, unkScale);
-
-        // TODO: Add isInDifferentArea info to support graying blip, this can be obtained by
-        // comparing info->unk1 (something like player area ID) and the output of the function at
-        // 0x670540
-        g_trackedUnitsData[guid] = {minimapPos, false, unitptr->vftable->GetName(unitptr)};
+        const auto it = g_trackedGameObjectTypesBlips.find(gameObjectData->m_type);
+        if (it != g_trackedGameObjectTypesBlips.end()) {
+            // Goblin Brainwashing Device filtering
+            if (gameObjectData->m_type != Game::GAMEOBJECT_TYPES::GAMEOBJECT_TYPE_QUESTGIVER ||
+                gameObjectData->m_displayID == 6424) {
+                TrackObject(info, objptr, guid, it->second);
+            }
+        }
     }
 }
 
@@ -99,35 +167,22 @@ static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnI
     // We are gathering the position in ObjectEnumProc because it is rate limited to avoid spamming
     // expensive calls. To do it in RenderObjectBlips, we can use DNInfo for current position,
     // MinimapGetWorldRadius() for world radius and minimapPtr +0x7C for layout scale.
-    for (const auto &[guid, trackedUnitData] : g_trackedUnitsData) {
-        const auto it = g_trackedUnitsBlip.find(guid);
-        if (it == g_trackedUnitsBlip.end())
-            continue;
-        const auto &trackedUnitBlip = it->second;
-
-        // TODO: Check how the original function is putting unit name on blips when mouseovering
-        // them
-        Game::DrawMinimapTexture(trackedUnitBlip.texture, trackedUnitData.minimapPos,
-                                 trackedUnitBlip.scale);
+    for (const auto &objData : g_trackedObjectsData) {
+        Game::DrawMinimapTexture(objData.blip.texture, objData.minimapPos, objData.blip.scale);
     }
 }
 
 static void UpdateCustomHover(Game::C2Vector mouse, Game::C2Vector offset) {
     std::vector<BlipHoverEntry> now;
-    now.reserve(g_trackedUnitsData.size());
+    now.reserve(g_trackedObjectsData.size());
 
-    for (const auto &[guid, unit] : g_trackedUnitsData) {
-        const auto it = g_trackedUnitsBlip.find(guid);
-        if (it == g_trackedUnitsBlip.end())
-            continue;
-        const auto &bl = it->second;
-
-        const float half = Game::BLIP_HALF * bl.scale;
-        const float px = unit.minimapPos.x + offset.x;
-        const float py = unit.minimapPos.y + offset.y;
+    for (const auto &objData : g_trackedObjectsData) {
+        const float half = Game::BLIP_HALF * objData.blip.scale;
+        const float px = objData.minimapPos.x + offset.x;
+        const float py = objData.minimapPos.y + offset.y;
 
         if (fabsf(mouse.x - px) <= half && fabsf(mouse.y - py) <= half) {
-            now.push_back({guid, unit.name, unit.isInDifferentArea});
+            now.push_back({objData.guid, objData.name, objData.isInDifferentArea});
         }
     }
 
@@ -173,7 +228,7 @@ static void WriteToMinimapTooltip(char *tooltipText) {
 static int __fastcall ClntObjMgrEnumVisibleObjects_h(
     Game::ClntObjMgrEnumVisibleObjectsCallback_t callback, void *context) {
     if (reinterpret_cast<uintptr_t>(callback) == Offsets::FUN_OBJECT_ENUM_PROC) {
-        g_trackedUnitsData.clear();
+        g_trackedObjectsData.clear();
     }
     return ClntObjMgrEnumVisibleObjects_o(callback, context);
 }
@@ -181,7 +236,7 @@ static int __fastcall ClntObjMgrEnumVisibleObjects_h(
 static int __fastcall ObjectEnumProc_h(Game::MINIMAPINFO *info, uint64_t guid) {
     // TODO: Check for tracked units here to avoid calling the original ObjectEnumProc
     // on units we're already tracking
-    TrackUnit(info, guid);
+    CheckObject(info, guid);
     return ObjectEnumProc_o(info, guid);
 }
 
@@ -244,6 +299,22 @@ static void __declspec(naked) OnLayerTrackUpdate_AppendToTooltipBuffer_h() {
     }
 }
 
+static Game::HTEXTURE__ *LoadTextureCached(const std::string &texturePathLower) {
+    if (const auto it = g_textureCache.find(texturePathLower); it != g_textureCache.end()) {
+        return it->second;
+    }
+
+    Game::CGxTexFlags texFlags(Game::EGxTexFilter::GxTex_Nearest, 0, 0, 0, 0, 0, 0, 1);
+    Game::CStatus status;
+    Game::HTEXTURE__ *texture =
+        Game::TextureCreate(texturePathLower.c_str(), &status, texFlags, 0, 1);
+    if (!status.ok()) {
+        return nullptr;
+    }
+    g_textureCache[texturePathLower] = texture;
+    return texture;
+}
+
 static int __fastcall Script_SetUnitBlip(void *L) {
     if (!Game::Lua::IsString(L, 1)) {
         Game::Lua::Error(L, "Usage: SetUnitBlip(unit [, texture [, scale]])");
@@ -262,39 +333,89 @@ static int __fastcall Script_SetUnitBlip(void *L) {
     }
 
     if (!Game::Lua::IsString(L, 2)) {
-        g_trackedUnitsBlip.erase(unitGUID);
+        g_trackedUnitBlips.erase(unitGUID);
         return 0;
     }
 
-    // TODO: Path should be lower cased to avoid duplicates
-    const auto *texturePath = Game::Lua::ToString(L, 2);
+    std::string texturePath = Game::Lua::ToString(L, 2);
+    std::transform(texturePath.begin(), texturePath.end(), texturePath.begin(), ::tolower);
 
-    Game::HTEXTURE__ *texture = nullptr;
-
-    const auto it = g_textureCache.find(texturePath);
-    if (it == g_textureCache.end()) {
-        Game::CGxTexFlags texFlags(Game::EGxTexFilter::GxTex_Nearest, 0, 0, 0, 0, 0, 0, 1);
-        Game::CStatus status;
-        texture = Game::TextureCreate(texturePath, &status, texFlags, 0, 1);
-
-        if (!status.ok()) {
-            Game::Lua::Error(L, "Couldn't load the texture.");
-            return 0;
-        }
-
-        g_textureCache[texturePath] = texture;
-    } else {
-        texture = it->second;
+    Game::HTEXTURE__ *texture = LoadTextureCached(texturePath);
+    if (!texture) {
+        Game::Lua::Error(L, "Couldn't load texture.");
+        return 0;
     }
 
-    float scale = 1;
+    float scale = 1.0F;
 
     if (Game::Lua::IsNumber(L, 3)) {
         scale = static_cast<float>(Game::Lua::ToNumber(L, 3));
     }
 
-    g_trackedUnitsBlip[unitGUID] = {texture, scale};
+    g_trackedUnitBlips[unitGUID] = {texture, scale};
 
+    return 0;
+}
+
+static int __fastcall Script_SetObjectTypeBlip(void *L) {
+    if (!Game::Lua::IsString(L, 1)) {
+        Game::Lua::Error(L, "Usage: SetObjectTypeBlip(type [, texture [, scale]])");
+        return 0;
+    }
+
+    std::string typeName = Game::Lua::ToString(L, 1);
+    std::transform(typeName.begin(), typeName.end(), typeName.begin(), ::tolower);
+
+    if (!Game::Lua::IsString(L, 2)) {
+        const auto itFlag = g_stringToFlag.find(typeName);
+        if (itFlag != g_stringToFlag.end()) {
+            g_trackedUnitFlagsBlips.erase(itFlag->second);
+            return 0;
+        }
+
+        const auto itType = g_stringToGameObjectType.find(typeName);
+        if (itType != g_stringToGameObjectType.end()) {
+            g_trackedGameObjectTypesBlips.erase(itType->second);
+            return 0;
+        }
+
+        Game::Lua::Error(L, "Unknown object type. Supported types: Auctioneer, Banker, "
+                            "Brainwashing, Flight Master, Innkeeper, Mailbox, Repair, Summoning "
+                            "Ritual Object, Summoning Ritual Unit, Trainer, Vendor.");
+        return 0;
+    }
+
+    std::string texturePath = Game::Lua::ToString(L, 2);
+    std::transform(texturePath.begin(), texturePath.end(), texturePath.begin(), ::tolower);
+
+    Game::HTEXTURE__ *texture = LoadTextureCached(texturePath);
+    if (!texture) {
+        Game::Lua::Error(L, "Couldn't load texture.");
+        return 0;
+    }
+
+    float scale = 1.0F;
+    if (Game::Lua::IsNumber(L, 3)) {
+        scale = static_cast<float>(Game::Lua::ToNumber(L, 3));
+    }
+
+    Blip blip = {texture, scale};
+
+    const auto itFlag = g_stringToFlag.find(typeName);
+    if (itFlag != g_stringToFlag.end()) {
+        g_trackedUnitFlagsBlips[itFlag->second] = blip;
+        return 0;
+    }
+
+    const auto itType = g_stringToGameObjectType.find(typeName);
+    if (itType != g_stringToGameObjectType.end()) {
+        g_trackedGameObjectTypesBlips[itType->second] = blip;
+        return 0;
+    }
+
+    Game::Lua::Error(L, "Unknown object type. Supported types: Auctioneer, Banker, Brainwashing, "
+                        "Flight Master, Innkeeper, Mailbox, Repair, Summoning Ritual Object, "
+                        "Summoning Ritual Unit, Trainer, Vendor.");
     return 0;
 }
 
@@ -316,6 +437,8 @@ bool InstallHooks() {
 void RegisterLuaFunctions() {
     Game::FrameScript_RegisterFunction("SetUnitBlip",
                                        reinterpret_cast<uintptr_t>(&Script_SetUnitBlip));
+    Game::FrameScript_RegisterFunction("SetObjectTypeBlip",
+                                       reinterpret_cast<uintptr_t>(&Script_SetObjectTypeBlip));
 }
 
 } // namespace Blips

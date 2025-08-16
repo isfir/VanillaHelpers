@@ -15,6 +15,7 @@ The library registers these Lua functions:
 WriteFile(filename, mode, content)
 content = ReadFile(filename)
 SetUnitBlip(unit [, texture [, scale]])
+SetObjectTypeBlip(type [, texture [, scale]])
 ```
 
 See the source code for implementation details.
