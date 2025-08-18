@@ -558,6 +558,7 @@ using CWorld_QueryMapObjIDs_t = bool(__fastcall *)(CWorld *thisptr, uint32_t *ou
                                                    uint32_t *outMapObjID, uint32_t *outGroupNum);
 using ClntObjMgrGetActivePlayer_t = uint64_t(__fastcall *)();
 using CGUnit_C_CanAssist_t = bool(__thiscall *)(CGUnit_C *thisptr, CGUnit_C *other);
+using CGGameUI_LeaveWorld_t = void(__fastcall *)();
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;

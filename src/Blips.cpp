@@ -36,6 +36,7 @@ namespace Blips {
 static Game::RenderObjectBlips_t RenderObjectBlips_o = nullptr;
 static Game::ObjectEnumProc_t ObjectEnumProc_o = nullptr;
 static Game::ClntObjMgrEnumVisibleObjects_t ClntObjMgrEnumVisibleObjects_o = nullptr;
+static Game::CGGameUI_LeaveWorld_t CGGameUI_LeaveWorld_o = nullptr;
 static void *OnLayerTrackUpdate_ChangedGate_o = nullptr;
 static void *OnLayerTrackUpdate_PreShowGate_o = nullptr;
 static void *OnLayerTrackUpdate_AppendToTooltipBuffer_o = nullptr;
@@ -257,6 +258,16 @@ static void __fastcall RenderObjectBlips_h(Game::CGMinimapFrame *thisptr, void *
     DrawTrackedBlips(thisptr, dnInfo);
 }
 
+static void __fastcall CGGameUI_LeaveWorld_h() {
+    g_trackedUnitBlips.clear();
+    g_trackedUnitFlagsBlips.clear();
+    g_trackedGameObjectTypesBlips.clear();
+    g_trackedObjectsData.clear();
+    g_blipHoverState = BlipHoverState();
+
+    CGGameUI_LeaveWorld_o();
+}
+
 // Right before the early-out check uses ECX to decide if anything changed
 static void __declspec(naked) OnLayerTrackUpdate_ChangedGate_h() {
     __asm {
@@ -447,6 +458,7 @@ bool InstallHooks() {
                   ClntObjMgrEnumVisibleObjects_o);
     HOOK_FUNCTION(Offsets::FUN_OBJECT_ENUM_PROC, ObjectEnumProc_h, ObjectEnumProc_o);
     HOOK_FUNCTION(Offsets::FUN_RENDER_OBJECT_BLIP, RenderObjectBlips_h, RenderObjectBlips_o);
+    HOOK_FUNCTION(Offsets::FUN_CGGAME_UI_LEAVE_WORLD, CGGameUI_LeaveWorld_h, CGGameUI_LeaveWorld_o);
     HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_CHANGED_GATE,
                   OnLayerTrackUpdate_ChangedGate_h, OnLayerTrackUpdate_ChangedGate_o);
     HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_PRE_SHOW_GATE,
