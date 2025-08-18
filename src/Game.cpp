@@ -50,6 +50,8 @@ const WorldPosToMinimapFrameCoords_t WorldPosToMinimapFrameCoords =
     reinterpret_cast<WorldPosToMinimapFrameCoords_t>(
         Offsets::FUN_WORLD_POS_TO_MINIMAP_FRAME_COORDS);
 const SStrPack_t SStrPack = reinterpret_cast<SStrPack_t>(Offsets::FUN_S_STR_PACK);
+const CWorld_QueryMapObjIDs_t CWorld_QueryMapObjIDs =
+    reinterpret_cast<CWorld_QueryMapObjIDs_t>(Offsets::FUN_CWORLD_QUERY_MAP_OBJ_IDS);
 
 CStatus::CStatus()
     : vftable(reinterpret_cast<void *>(Offsets::VFTABLE_CSTATUS)), m_unk(8),
@@ -74,10 +76,11 @@ C3Vector &normal = *reinterpret_cast<C3Vector *>(Offsets::CONST_NORMAL_VEC3);
 unsigned short *vertIndices = reinterpret_cast<unsigned short *>(Offsets::CONST_VERT_INDICES);
 const float &BLIP_HALF = *reinterpret_cast<float *>(Offsets::CONST_BLIP_HALF);
 
-void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale) {
-    const CImVector color = {0xFF, 0xFF, 0xFF, 0xFF}; // White
-    // TODO: Add graying blip using isInDifferentArea CImVector
-    // color = {0xFF, 0xB0, 0xB0, 0xB0}; //  Dark Gray
+void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray) {
+    CImVector color = {0xFF, 0xFF, 0xFF, 0xFF}; // White
+    if (gray) {
+        color = {0xFF, 0xB0, 0xB0, 0xB0}; //  Dark Gray
+    }
 
     C3Vector vertices[4];
     for (auto i = 0; i < 4; i++) {

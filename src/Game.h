@@ -19,6 +19,7 @@ namespace Game {
 
 struct HTEXTURE__; // Don't know real struct
 struct CGxTex;     // Don't know real struct
+struct CWorld;     // Don't know real struct
 
 enum TYPE_MASK {
     TYPEMASK_OBJECT = 0x1,
@@ -175,12 +176,14 @@ struct CGObject_C_VfTable {
 
 struct CGObject_C {
     CGObject_C_VfTable *vftable;
-    void *unk0;
-    void *m_data;
-    void *unk1[2];
+    void *m_unk0;
+    CGObject_Data *m_data;
+    void *m_unk1[2];
     uint32_t m_objectType;
-    void *unk2[6];
-    uint64_t guid;
+    void *m_unk2[6];
+    uint64_t m_guid; // 0x30
+    void *m_unk3[42];
+    CWorld *m_worldData; // 0xE0
 };
 
 struct ItemEnchantment {
@@ -456,8 +459,8 @@ struct DNInfo {
 
 struct MINIMAPINFO {
     void *unk0;
-    void *unk1;
-    void *unk2;
+    uint32_t wmoID;
+    uint32_t mapObjID;
     C3Vector currentPos;
     float radius;
     float layoutScale;
@@ -550,6 +553,8 @@ using ClntObjMgrEnumVisibleObjects_t =
     int(__fastcall *)(ClntObjMgrEnumVisibleObjectsCallback_t callback, void *context);
 using SStrPack_t = int(__stdcall *)(char *dst, const char *src, int cap);
 using InvalidFunctionPtrCheck_t = void(__fastcall *)(void *target);
+using CWorld_QueryMapObjIDs_t = bool(__fastcall *)(CWorld *thisptr, uint32_t *outWmoID,
+                                                   uint32_t *outMapObjID, uint32_t *outGroupNum);
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;
@@ -563,8 +568,9 @@ extern const GxPrimUnlockVertexPtrs_t GxPrimUnlockVertexPtrs;
 extern const TextureCreate_t TextureCreate;
 extern const WorldPosToMinimapFrameCoords_t WorldPosToMinimapFrameCoords;
 extern const SStrPack_t SStrPack;
+extern const CWorld_QueryMapObjIDs_t CWorld_QueryMapObjIDs;
 
-void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale);
+void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);
 
 extern C3Vector *s_blipVertices;
 extern TexCoord &texCoords;

@@ -94,6 +94,15 @@ static void TrackObject(Game::MINIMAPINFO *info, Game::CGObject_C *objectptr, ui
     Game::C2Vector minimapPos;
     Game::C3Vector unitPos;
 
+    uint32_t wmoID = 0;
+    uint32_t mapObjID = 0;
+    uint32_t groupNum = 0;
+    Game::CWorld_QueryMapObjIDs(objectptr->m_worldData, &wmoID, &mapObjID, &groupNum);
+
+    // Hide outside blip when inside, replicating original function
+    if (info->wmoID && (wmoID != info->wmoID || mapObjID != info->mapObjID))
+        return;
+
     objectptr->vftable->GetPosition(objectptr, &unitPos);
     float unkScale = info->minimapFrame->FrameScriptPart.vftable->GetUnkScale(
         &info->minimapFrame->FrameScriptPart);
@@ -101,10 +110,8 @@ static void TrackObject(Game::MINIMAPINFO *info, Game::CGObject_C *objectptr, ui
     Game::WorldPosToMinimapFrameCoords(&minimapPos, nullptr, info->currentPos, info->radius,
                                        unitPos.x, unitPos.y, info->layoutScale, unkScale);
 
-    // TODO: Add isInDifferentArea info to support graying blip, this can be obtained by comparing
-    // info->unk1 (something like player area ID) and the output of the function at 0x670540
     g_trackedObjectsData.push_back(
-        {guid, minimapPos, false, objectptr->vftable->GetName(objectptr), blip});
+        {guid, minimapPos, wmoID != info->wmoID, objectptr->vftable->GetName(objectptr), blip});
 }
 
 static bool CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
@@ -172,7 +179,8 @@ static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnI
     // expensive calls. To do it in RenderObjectBlips, we can use DNInfo for current position,
     // MinimapGetWorldRadius() for world radius and minimapPtr +0x7C for layout scale.
     for (const auto &objData : g_trackedObjectsData) {
-        Game::DrawMinimapTexture(objData.blip.texture, objData.minimapPos, objData.blip.scale);
+        Game::DrawMinimapTexture(objData.blip.texture, objData.minimapPos, objData.blip.scale,
+                                 objData.isInDifferentArea);
     }
 }
 
