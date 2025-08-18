@@ -333,18 +333,24 @@ static int __fastcall Script_SetUnitBlip(void *L) {
     }
 
     const auto *unitName = Game::Lua::ToString(L, 1);
-    uint64_t unitGUID = Game::GetGUIDFromName(unitName);
-    Game::CGObject_C *unitptr =
-        Game::ClntObjMgrObjectPtr(Game::TYPEMASK_UNIT, nullptr, unitGUID, 0);
+    const uint64_t unitGUID = Game::GetGUIDFromName(unitName);
 
-    // TODO: Add UnitCanAssist check
-    if (unitptr == nullptr) {
+    if (unitGUID == 0) {
         Game::Lua::Error(L, "Unit not found.");
         return 0;
     }
 
     if (!Game::Lua::IsString(L, 2)) {
         g_trackedUnitBlips.erase(unitGUID);
+        return 0;
+    }
+
+    // TODO: Add UnitCanAssist check
+    Game::CGObject_C *unitptr =
+        Game::ClntObjMgrObjectPtr(Game::TYPEMASK_UNIT, nullptr, unitGUID, 0);
+
+    if (unitptr == nullptr) {
+        Game::Lua::Error(L, "Unit not found.");
         return 0;
     }
 
