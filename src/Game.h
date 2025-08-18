@@ -20,6 +20,7 @@ namespace Game {
 struct HTEXTURE__; // Don't know real struct
 struct CGxTex;     // Don't know real struct
 struct CWorld;     // Don't know real struct
+struct CGUnit_C;
 
 enum TYPE_MASK {
     TYPEMASK_OBJECT = 0x1,
@@ -523,9 +524,9 @@ extern const lua_error_t Error;
 using FrameScript_RegisterFunction_t = void(__fastcall *)(const char *name, uintptr_t func);
 using LoadScriptFunctions_t = void(__fastcall *)();
 using GetGUIDFromName_t = uint64_t(__fastcall *)(const char *unitName);
-using ClntObjMgrObjectPtr_t = Game::CGObject_C *(__fastcall *)(uint32_t typeMask,
-                                                               const char *debugMessage,
-                                                               uint64_t guid, int debugCode);
+using ClntObjMgrObjectPtr_t = CGObject_C *(__fastcall *)(uint32_t typeMask,
+                                                         const char *debugMessage, uint64_t guid,
+                                                         int debugCode);
 using RenderObjectBlips_t = void(__thiscall *)(CGMinimapFrame *thisptr, DNInfo *dnInfo);
 using TextureGetGxTex_t = CGxTex *(__fastcall *)(HTEXTURE__ * texture, int, CStatus *status);
 using GxRsSet_t = void(__fastcall *)(EGxRenderState, CGxTex *);
@@ -555,6 +556,8 @@ using SStrPack_t = int(__stdcall *)(char *dst, const char *src, int cap);
 using InvalidFunctionPtrCheck_t = void(__fastcall *)(void *target);
 using CWorld_QueryMapObjIDs_t = bool(__fastcall *)(CWorld *thisptr, uint32_t *outWmoID,
                                                    uint32_t *outMapObjID, uint32_t *outGroupNum);
+using ClntObjMgrGetActivePlayer_t = uint64_t(__fastcall *)();
+using CGUnit_C_CanAssist_t = bool(__thiscall *)(CGUnit_C *thisptr, CGUnit_C *other);
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;
@@ -569,6 +572,8 @@ extern const TextureCreate_t TextureCreate;
 extern const WorldPosToMinimapFrameCoords_t WorldPosToMinimapFrameCoords;
 extern const SStrPack_t SStrPack;
 extern const CWorld_QueryMapObjIDs_t CWorld_QueryMapObjIDs;
+extern const ClntObjMgrGetActivePlayer_t ClntObjMgrGetActivePlayer;
+extern const CGUnit_C_CanAssist_t CGUnit_C_CanAssist;
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);
 

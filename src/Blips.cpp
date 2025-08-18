@@ -345,12 +345,18 @@ static int __fastcall Script_SetUnitBlip(void *L) {
         return 0;
     }
 
-    // TODO: Add UnitCanAssist check
-    Game::CGObject_C *unitptr =
-        Game::ClntObjMgrObjectPtr(Game::TYPEMASK_UNIT, nullptr, unitGUID, 0);
+    auto *unitptr = reinterpret_cast<Game::CGUnit_C *>(
+        Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_UNIT, nullptr, unitGUID, 0));
 
     if (unitptr == nullptr) {
         Game::Lua::Error(L, "Unit not found.");
+        return 0;
+    }
+
+    auto *playerptr = reinterpret_cast<Game::CGUnit_C *>(Game::ClntObjMgrObjectPtr(
+        Game::TYPE_MASK::TYPEMASK_PLAYER, nullptr, Game::ClntObjMgrGetActivePlayer(), 0));
+    if (!Game::CGUnit_C_CanAssist(playerptr, unitptr)) {
+        Game::Lua::Error(L, "Unit is not friendly.");
         return 0;
     }
 

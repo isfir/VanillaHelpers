@@ -52,6 +52,10 @@ const WorldPosToMinimapFrameCoords_t WorldPosToMinimapFrameCoords =
 const SStrPack_t SStrPack = reinterpret_cast<SStrPack_t>(Offsets::FUN_S_STR_PACK);
 const CWorld_QueryMapObjIDs_t CWorld_QueryMapObjIDs =
     reinterpret_cast<CWorld_QueryMapObjIDs_t>(Offsets::FUN_CWORLD_QUERY_MAP_OBJ_IDS);
+const ClntObjMgrGetActivePlayer_t ClntObjMgrGetActivePlayer =
+    reinterpret_cast<ClntObjMgrGetActivePlayer_t>(Offsets::FUN_CLNT_OBJ_MGR_GET_ACTIVE_PLAYER);
+const CGUnit_C_CanAssist_t CGUnit_C_CanAssist =
+    reinterpret_cast<CGUnit_C_CanAssist_t>(Offsets::FUN_CGUNIT_C_CAN_ASSIST);
 
 CStatus::CStatus()
     : vftable(reinterpret_cast<void *>(Offsets::VFTABLE_CSTATUS)), m_unk(8),
@@ -89,7 +93,7 @@ void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float sca
         vertices[i].z = scale * s_blipVertices[i].z;
     }
 
-    Game::CStatus status;
+    CStatus status;
     CGxTex *gxTex = TextureGetGxTex(texture, 1, &status);
     if (!status.ok())
         return;
