@@ -22,6 +22,7 @@ jobs:
           -G "Visual Studio 17 2022"
           -A Win32
           -DCMAKE_BUILD_TYPE=Release
+          "-DVANILLAHELPERS_TAG=${{ github.ref_name }}"
 
       - name: Build
         run: cmake --build build --config Release --parallel

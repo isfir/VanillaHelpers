@@ -19,6 +19,30 @@ set(HEADERS src/Offsets.h src/Game.h src/FileIO.h src/Blips.h)
 # Create the shared library (DLL)
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 
+# Default dev value
+set(VANILLAHELPERS_VERSION_VALUE 999999)
+
+set(VANILLAHELPERS_TAG
+    ""
+    CACHE STRING "Release tag like v1.2.3")
+
+if(VANILLAHELPERS_TAG MATCHES "^v([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
+  set(_MAJOR "${CMAKE_MATCH_1}")
+  set(_MINOR "${CMAKE_MATCH_2}")
+  set(_PATCH "${CMAKE_MATCH_3}")
+  math(EXPR VANILLAHELPERS_VERSION_VALUE
+       "${_MAJOR} * 10000 + ${_MINOR} * 100 + ${_PATCH}")
+elseif(VANILLAHELPERS_TAG)
+  message(
+    FATAL_ERROR
+      "Invalid VANILLAHELPERS_TAG: ${VANILLAHELPERS_TAG} (expected vMAJOR.MINOR.PATCH)"
+  )
+endif()
+
+target_compile_definitions(
+  ${PROJECT_NAME}
+  PRIVATE VANILLAHELPERS_VERSION_VALUE=${VANILLAHELPERS_VERSION_VALUE})
+
 # Link MinHook to your project
 target_link_libraries(${PROJECT_NAME} PRIVATE minhook)
 

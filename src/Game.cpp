@@ -56,6 +56,8 @@ const ClntObjMgrGetActivePlayer_t ClntObjMgrGetActivePlayer =
     reinterpret_cast<ClntObjMgrGetActivePlayer_t>(Offsets::FUN_CLNT_OBJ_MGR_GET_ACTIVE_PLAYER);
 const CGUnit_C_CanAssist_t CGUnit_C_CanAssist =
     reinterpret_cast<CGUnit_C_CanAssist_t>(Offsets::FUN_CGUNIT_C_CAN_ASSIST);
+const FrameScript_Execute_t FrameScript_Execute =
+    reinterpret_cast<FrameScript_Execute_t>(Offsets::FUN_FRAME_SCRIPT_EXECUTE);
 
 CStatus::CStatus()
     : vftable(reinterpret_cast<void *>(Offsets::VFTABLE_CSTATUS)), m_unk(8),

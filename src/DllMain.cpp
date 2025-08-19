@@ -16,10 +16,21 @@
 #include "Game.h"
 #include "MinHook.h"
 #include "Offsets.h"
+#include <string>
 
+static Game::FrameScript_Initialize_t FrameScript_Initialize_o = nullptr;
 static Game::LoadScriptFunctions_t LoadScriptFunctions_o = nullptr;
 
 static void __fastcall InvalidFunctionPtrCheck_h() {}
+
+static bool __fastcall FrameScript_Initialize_h() {
+    FrameScript_Initialize_o();
+    const std::string luaScript =
+        "VANILLAHELPERS_VERSION=" + std::to_string(VANILLAHELPERS_VERSION_VALUE) +
+        "\nVANILLA_HELPERS_VERSION=" + std::to_string(VANILLAHELPERS_VERSION_VALUE);
+    Game::FrameScript_Execute(luaScript.c_str(), "VanillaHelpers.lua");
+    return TRUE;
+}
 
 static void __fastcall LoadScriptFunctions_h() {
     LoadScriptFunctions_o();
@@ -40,8 +51,16 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
         if (MH_EnableHook(target) != MH_OK)
             return FALSE;
 
+        target = reinterpret_cast<LPVOID>(Offsets ::FUN_FRAME_SCRIPT_INITIALIZE);
+        if (MH_CreateHook(target, static_cast<LPVOID>(FrameScript_Initialize_h),
+                          reinterpret_cast<LPVOID *>(&FrameScript_Initialize_o)))
+            return FALSE;
+        if (MH_EnableHook(target) != MH_OK)
+            return FALSE;
+
         target = reinterpret_cast<LPVOID>(Offsets ::FUN_LOAD_SCRIPT_FUNCTIONS);
-        if (MH_CreateHook(target, static_cast<LPVOID>(LoadScriptFunctions_h), reinterpret_cast<LPVOID *>(&LoadScriptFunctions_o)))
+        if (MH_CreateHook(target, static_cast<LPVOID>(LoadScriptFunctions_h),
+                          reinterpret_cast<LPVOID *>(&LoadScriptFunctions_o)))
             return FALSE;
         if (MH_EnableHook(target) != MH_OK)
             return FALSE;
