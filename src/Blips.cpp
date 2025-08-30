@@ -36,6 +36,7 @@ namespace Blips {
 static Game::RenderObjectBlips_t RenderObjectBlips_o = nullptr;
 static Game::ObjectEnumProc_t ObjectEnumProc_o = nullptr;
 static Game::ClntObjMgrEnumVisibleObjects_t ClntObjMgrEnumVisibleObjects_o = nullptr;
+static void *MinimapRender_PartyListing_o = nullptr;
 static void *OnLayerTrackUpdate_ChangedGate_o = nullptr;
 static void *OnLayerTrackUpdate_PreShowGate_o = nullptr;
 static void *OnLayerTrackUpdate_AppendToTooltipBuffer_o = nullptr;
@@ -184,6 +185,10 @@ static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnI
     }
 }
 
+static bool IsUnitTracked(uint64_t guid) {
+    return g_trackedUnitBlips.find(guid) != g_trackedUnitBlips.end();
+}
+
 static void UpdateCustomHover(Game::C2Vector mouse, Game::C2Vector offset) {
     std::vector<BlipHoverEntry> now;
     now.reserve(g_trackedObjectsData.size());
@@ -257,6 +262,28 @@ static void __fastcall RenderObjectBlips_h(Game::CGMinimapFrame *thisptr, void *
     DrawTrackedBlips(thisptr, dnInfo);
 }
 
+constexpr uintptr_t minimapSkipPartyUnitAddress = 0x4ed79e;
+
+static void __declspec(naked) MinimapRender_PartyListing_h() {
+    __asm {
+        pushad
+        mov  eax, [edi + 0xbc7660] // GUID low
+        mov  edx, [edi + 0xbc7664] // GUID high
+        push edx
+        push eax
+        call IsUnitTracked
+        add  esp, 8
+        test al, al
+        jnz  skip
+
+        popad
+        jmp  dword ptr [MinimapRender_PartyListing_o]
+    skip:
+        popad
+        jmp  minimapSkipPartyUnitAddress // skip processing this unit
+    }
+}
+
 // Right before the early-out check uses ECX to decide if anything changed
 static void __declspec(naked) OnLayerTrackUpdate_ChangedGate_h() {
     __asm {
@@ -277,7 +304,6 @@ static void __declspec(naked) OnLayerTrackUpdate_ChangedGate_h() {
         je   short no_custom_change
         mov  ecx, 1
     no_custom_change:
-
         jmp  dword ptr [OnLayerTrackUpdate_ChangedGate_o]
     }
 }
@@ -290,7 +316,6 @@ static void __declspec(naked) OnLayerTrackUpdate_PreShowGate_h() {
         je   short no_set_edx
         mov  edx, 1
     no_set_edx:
-
         jmp  dword ptr [OnLayerTrackUpdate_PreShowGate_o]
     }
 }
@@ -447,6 +472,8 @@ bool InstallHooks() {
                   ClntObjMgrEnumVisibleObjects_o);
     HOOK_FUNCTION(Offsets::FUN_OBJECT_ENUM_PROC, ObjectEnumProc_h, ObjectEnumProc_o);
     HOOK_FUNCTION(Offsets::FUN_RENDER_OBJECT_BLIP, RenderObjectBlips_h, RenderObjectBlips_o);
+    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_RENDER_PARTY_LISTING, MinimapRender_PartyListing_h,
+                  MinimapRender_PartyListing_o);
     HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_CHANGED_GATE,
                   OnLayerTrackUpdate_ChangedGate_h, OnLayerTrackUpdate_ChangedGate_o);
     HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_PRE_SHOW_GATE,
