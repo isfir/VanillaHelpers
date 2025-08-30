@@ -50,6 +50,8 @@ extern const atexit_t atexit;
 // Used to get the world radius given to WorldPosToMinimapFrameCoords, but it's already in the
 // MINIMAPINFO passed to RenderObjectBlips
 extern const MinimapGetWorldRadius_t MinimapGetWorldRadius;
+// Was used to reinitialize blips state, but was called during all loading screens
+using CGGameUI_LeaveWorld_t = void(__fastcall *)();
 
 // Used in the original RenderObjectBlips
 extern uint8_t &s_renderObjectBlipsInitialized;

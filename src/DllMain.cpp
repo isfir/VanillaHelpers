@@ -29,6 +29,7 @@ static bool __fastcall FrameScript_Initialize_h() {
         "VANILLAHELPERS_VERSION=" + std::to_string(VANILLAHELPERS_VERSION_VALUE) +
         "\nVANILLA_HELPERS_VERSION=" + std::to_string(VANILLAHELPERS_VERSION_VALUE);
     Game::FrameScript_Execute(luaScript.c_str(), "VanillaHelpers.lua");
+    Blips::Initialize();
     return TRUE;
 }
 

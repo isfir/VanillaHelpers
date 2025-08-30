@@ -558,7 +558,6 @@ using CWorld_QueryMapObjIDs_t = bool(__fastcall *)(CWorld *thisptr, uint32_t *ou
                                                    uint32_t *outMapObjID, uint32_t *outGroupNum);
 using ClntObjMgrGetActivePlayer_t = uint64_t(__fastcall *)();
 using CGUnit_C_CanAssist_t = bool(__thiscall *)(CGUnit_C *thisptr, CGUnit_C *other);
-using CGGameUI_LeaveWorld_t = void(__fastcall *)();
 using FrameScript_Initialize_t = bool(__fastcall *)();
 using FrameScript_Execute_t = bool(__fastcall *)(const char *script, const char *scriptName);
 
