@@ -12,6 +12,7 @@
 // VanillaHelpers. If not, see <https://www.gnu.org/licenses/>.
 
 #include "Blips.h"
+#include "Common.h"
 #include "FileIO.h"
 #include "Game.h"
 #include "MinHook.h"
@@ -52,19 +53,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
         if (MH_EnableHook(target) != MH_OK)
             return FALSE;
 
-        target = reinterpret_cast<LPVOID>(Offsets ::FUN_FRAME_SCRIPT_INITIALIZE);
-        if (MH_CreateHook(target, static_cast<LPVOID>(FrameScript_Initialize_h),
-                          reinterpret_cast<LPVOID *>(&FrameScript_Initialize_o)))
-            return FALSE;
-        if (MH_EnableHook(target) != MH_OK)
-            return FALSE;
-
-        target = reinterpret_cast<LPVOID>(Offsets ::FUN_LOAD_SCRIPT_FUNCTIONS);
-        if (MH_CreateHook(target, static_cast<LPVOID>(LoadScriptFunctions_h),
-                          reinterpret_cast<LPVOID *>(&LoadScriptFunctions_o)))
-            return FALSE;
-        if (MH_EnableHook(target) != MH_OK)
-            return FALSE;
+        HOOK_FUNCTION(Offsets::FUN_FRAME_SCRIPT_INITIALIZE, FrameScript_Initialize_h,
+                      FrameScript_Initialize_o);
+        HOOK_FUNCTION(Offsets::FUN_LOAD_SCRIPT_FUNCTIONS, LoadScriptFunctions_h,
+                      LoadScriptFunctions_o);
 
         if (!Blips::InstallHooks())
             return FALSE;

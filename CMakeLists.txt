@@ -12,9 +12,8 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded")
 add_subdirectory(external/minhook)
 
 # Add the source files for your project
-set(SOURCES src/DllMain.cpp src/Game.cpp src/FileIO.cpp src/Blips.cpp)
-
-set(HEADERS src/Offsets.h src/Game.h src/FileIO.h src/Blips.h)
+file(GLOB SOURCES "src/*.cpp")
+file(GLOB HEADERS "src/*.h")
 
 # Create the shared library (DLL)
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
