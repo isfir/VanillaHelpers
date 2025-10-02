@@ -23,4 +23,6 @@ namespace Common {
             return FALSE;                                                                          \
     }
 
+bool PatchBytes(void *dst, const void *src, size_t len);
+
 } // namespace Common
