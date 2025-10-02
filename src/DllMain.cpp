@@ -17,6 +17,7 @@
 #include "Game.h"
 #include "MinHook.h"
 #include "Offsets.h"
+#include "Texture.h"
 #include <string>
 
 static Game::FrameScript_Initialize_t FrameScript_Initialize_o = nullptr;
@@ -43,6 +44,8 @@ static void __fastcall LoadScriptFunctions_h() {
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
+
+        Texture::Initialize();
 
         if (MH_Initialize() != MH_OK)
             return FALSE;
