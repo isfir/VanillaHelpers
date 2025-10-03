@@ -58,6 +58,12 @@ const CGUnit_C_CanAssist_t CGUnit_C_CanAssist =
     reinterpret_cast<CGUnit_C_CanAssist_t>(Offsets::FUN_CGUNIT_C_CAN_ASSIST);
 const FrameScript_Execute_t FrameScript_Execute =
     reinterpret_cast<FrameScript_Execute_t>(Offsets::FUN_FRAME_SCRIPT_EXECUTE);
+const CVar_Register_t CVar_Register = reinterpret_cast<CVar_Register_t>(Offsets::FUN_CVAR_REGISTER);
+const ClntObjMgrEnumVisibleObjects_t ClntObjMgrEnumVisibleObjects =
+    reinterpret_cast<ClntObjMgrEnumVisibleObjects_t>(
+        Offsets::FUN_CLNT_OBJ_MGR_ENUM_VISIBLE_OBJECTS);
+const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount =
+    reinterpret_cast<CGUnit_C_RefreshMount_t>(Offsets::FUN_CGUNIT_C_REFRESH_MOUNT);
 
 CStatus::CStatus()
     : vftable(reinterpret_cast<void *>(Offsets::VFTABLE_CSTATUS)), m_unk(8),

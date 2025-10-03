@@ -113,9 +113,9 @@ static bool CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
             Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_UNIT, nullptr, guid, 0);
         if (unitptr != nullptr) {
             TrackObject(info, unitptr, guid, unitIt->second);
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     uint32_t typemask = 0;
@@ -126,11 +126,11 @@ static bool CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
         typemask = typemask | Game::TYPE_MASK::TYPEMASK_GAMEOBJECT;
     }
     if (typemask == 0)
-        return FALSE;
+        return false;
 
     Game::CGObject_C *objptr = Game::ClntObjMgrObjectPtr(typemask, nullptr, guid, 0);
     if (objptr == nullptr)
-        return FALSE;
+        return false;
 
     if (objptr->m_objectType == Game::OBJECT_TYPE::UNIT) {
         const auto *unitData = reinterpret_cast<Game::CGUnitData *>(objptr->m_data);
@@ -148,7 +148,7 @@ static bool CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
         }
         if (matchedFlag != 0) {
             TrackObject(info, objptr, guid, blip);
-            return TRUE;
+            return true;
         }
     } else if (objptr->m_objectType == Game::OBJECT_TYPE::GAMEOBJECT) {
         const auto *gameObjectData = reinterpret_cast<Game::CGGameObjectData *>(objptr->m_data);
@@ -159,11 +159,11 @@ static bool CheckObject(Game::MINIMAPINFO *info, uint64_t guid) {
             if (gameObjectData->m_type != Game::GAMEOBJECT_TYPES::GAMEOBJECT_TYPE_QUESTGIVER ||
                 gameObjectData->m_displayID == 6424) {
                 TrackObject(info, objptr, guid, it->second);
-                return TRUE;
+                return true;
             }
         }
     }
-    return FALSE;
+    return false;
 }
 
 static void DrawTrackedBlips(Game::CGMinimapFrame *minimapPtr, Game::DNInfo *dnInfo) {
@@ -472,7 +472,7 @@ bool InstallHooks() {
     HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_APPEND_TO_TOOLTIP_BUFFER,
                   OnLayerTrackUpdate_AppendToTooltipBuffer_h,
                   OnLayerTrackUpdate_AppendToTooltipBuffer_o);
-    return true;
+    return TRUE;
 }
 
 void RegisterLuaFunctions() {

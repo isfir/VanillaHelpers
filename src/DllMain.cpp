@@ -16,14 +16,21 @@
 #include "FileIO.h"
 #include "Game.h"
 #include "MinHook.h"
+#include "MtxFilter.h"
 #include "Offsets.h"
 #include "Texture.h"
 #include <string>
 
+static Game::ClientInitializeGame_t ClientInitializeGame_o = nullptr;
 static Game::FrameScript_Initialize_t FrameScript_Initialize_o = nullptr;
 static Game::LoadScriptFunctions_t LoadScriptFunctions_o = nullptr;
 
 static void __fastcall InvalidFunctionPtrCheck_h() {}
+
+static void __fastcall ClientInitializeGame_h(uint32_t unk0, Game::C3Vector unk1) {
+    MtxFilter::Initialize();
+    ClientInitializeGame_o(unk0, unk1);
+}
 
 static bool __fastcall FrameScript_Initialize_h() {
     FrameScript_Initialize_o();
@@ -56,12 +63,17 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
         if (MH_EnableHook(target) != MH_OK)
             return FALSE;
 
+        HOOK_FUNCTION(Offsets::FUN_CLIENT_INITIALIZE_GAME, ClientInitializeGame_h,
+                      ClientInitializeGame_o);
         HOOK_FUNCTION(Offsets::FUN_FRAME_SCRIPT_INITIALIZE, FrameScript_Initialize_h,
                       FrameScript_Initialize_o);
         HOOK_FUNCTION(Offsets::FUN_LOAD_SCRIPT_FUNCTIONS, LoadScriptFunctions_h,
                       LoadScriptFunctions_o);
 
         if (!Blips::InstallHooks())
+            return FALSE;
+
+        if (!MtxFilter::InstallHooks())
             return FALSE;
     } else if (reason == DLL_PROCESS_DETACH) {
         MH_Uninitialize();

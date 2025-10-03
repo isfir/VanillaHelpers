@@ -20,7 +20,6 @@ namespace Game {
 struct HTEXTURE__; // Don't know real struct
 struct CGxTex;     // Don't know real struct
 struct CWorld;     // Don't know real struct
-struct CGUnit_C;
 
 enum TYPE_MASK {
     TYPEMASK_OBJECT = 0x1,
@@ -127,6 +126,20 @@ enum GAMEOBJECT_TYPES {
     GAMEOBJECT_TYPE_AURA_GENERATOR = 30,
 };
 
+enum CVAR_CATEGORY {
+    DEBUG = 0,
+    GRAPHICS = 1,
+    CONSOLE = 2,
+    COMBAT = 3,
+    GAME = 4,
+    DEFAULT = 5,
+    NET = 6,
+    SOUND = 7,
+    GM = 8,
+    NONE = 9,
+    LAST = 10
+};
+
 struct C2Vector {
     float x;
     float y;
@@ -229,6 +242,8 @@ struct VirtualItemInfo {
     unsigned char m_padding2;
 };
 
+struct CGUnit_C;
+
 struct CGUnitData {
     CGObject_Data m_objectData;
     uint64_t m_charm;
@@ -293,6 +308,18 @@ struct CGUnitData {
     int32_t m_powerCostModifier[7];
     float m_powerCostMultiplier[7];
     uint32_t m_padding;
+};
+
+struct CGUnit_C {
+    void *vftable;
+    void *m_unk0;
+    CGUnitData *m_data;
+    void *m_unk1[2];
+    uint32_t m_objectType;
+    void *m_unk2[6];
+    uint64_t m_guid; // 0x30
+    void *m_unk3[42];
+    CWorld *m_worldData; // 0xE0
 };
 
 struct QuestLogEntry {
@@ -549,9 +576,10 @@ using WorldPosToMinimapFrameCoords_t = C2Vector *(__fastcall *)(C2Vector * out, 
                                                                 float worldX, float worldY,
                                                                 float layoutScale, float unkScale);
 using ObjectEnumProc_t = int(__fastcall *)(MINIMAPINFO *info, uint64_t guid);
-using ClntObjMgrEnumVisibleObjectsCallback_t = int(__thiscall *)(void *context, uint64_t guid);
+using ClntObjMgrEnumVisibleObjectsCallback_t = bool(__fastcall *)(void *context, void *edx,
+                                                                  uint64_t guid);
 using ClntObjMgrEnumVisibleObjects_t =
-    int(__fastcall *)(ClntObjMgrEnumVisibleObjectsCallback_t callback, void *context);
+    bool(__fastcall *)(ClntObjMgrEnumVisibleObjectsCallback_t callback, void *context);
 using SStrPack_t = int(__stdcall *)(char *dst, const char *src, int cap);
 using InvalidFunctionPtrCheck_t = void(__fastcall *)(void *target);
 using CWorld_QueryMapObjIDs_t = bool(__fastcall *)(CWorld *thisptr, uint32_t *outWmoID,
@@ -560,6 +588,15 @@ using ClntObjMgrGetActivePlayer_t = uint64_t(__fastcall *)();
 using CGUnit_C_CanAssist_t = bool(__thiscall *)(CGUnit_C *thisptr, CGUnit_C *other);
 using FrameScript_Initialize_t = bool(__fastcall *)();
 using FrameScript_Execute_t = bool(__fastcall *)(const char *script, const char *scriptName);
+using CVar_Callback_t = bool(__fastcall *)(void *CVar, const char *oldValue, const char *newValue,
+                                           void *userData);
+using CVar_Register_t = void(__fastcall *)(const char *name, const char *help, uint32_t flags,
+                                           const char *defaultValue, CVar_Callback_t callback,
+                                           CVAR_CATEGORY category, bool consoleOnly,
+                                           void *userData);
+using ClientInitializeGame_t = void(__fastcall *)(uint32_t, C3Vector);
+using CGUnit_C_CreateUnitMount_t = void(__thiscall *)(CGUnit_C *thisptr);
+using CGUnit_C_RefreshMount_t = void(__thiscall *)(CGUnit_C *thisptr, bool reset);
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;
@@ -577,6 +614,9 @@ extern const CWorld_QueryMapObjIDs_t CWorld_QueryMapObjIDs;
 extern const ClntObjMgrGetActivePlayer_t ClntObjMgrGetActivePlayer;
 extern const CGUnit_C_CanAssist_t CGUnit_C_CanAssist;
 extern const FrameScript_Execute_t FrameScript_Execute;
+extern const CVar_Register_t CVar_Register;
+extern const ClntObjMgrEnumVisibleObjects_t ClntObjMgrEnumVisibleObjects;
+extern const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount;
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);
 
