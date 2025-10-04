@@ -98,6 +98,7 @@ static const std::unordered_set<uint32_t> storeMountIds = {
     18524, // Dalaran Rain Cloud
     18510, // Turbo-Charged Flying Machine
     20651, // Celestial Steed
+    20649, // Invincible
 };
 
 static Game::CGUnit_C_CreateUnitMount_t CGUnit_C_CreateUnitMount_o = nullptr;
@@ -107,7 +108,10 @@ static bool g_hideShopMounts = false;
 static void __fastcall CGUnit_C_CreateUnitMount_h(Game::CGUnit_C *unitptr) {
     uint32_t mountDisplayId = unitptr->m_data->m_mountDisplayId;
     if (g_hideShopMounts && storeMountIds.count(mountDisplayId)) {
-        unitptr->m_data->m_mountDisplayId = unitptr->m_data->m_factionTemplate == 3 ? 247 : 2404;
+        const auto *factionTemplate = Game::DbLookupById<Game::FactionTemplate>(
+            Game::g_factionTemplateDB, unitptr->m_data->m_factionTemplate);
+        unitptr->m_data->m_mountDisplayId =
+            factionTemplate && factionTemplate->m_factionGroup & 0x4 ? 247 : 2404;
         CGUnit_C_CreateUnitMount_o(unitptr);
         unitptr->m_data->m_mountDisplayId = mountDisplayId;
     } else {

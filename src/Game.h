@@ -311,7 +311,7 @@ struct CGUnitData {
 };
 
 struct CGUnit_C {
-    void *vftable;
+    CGObject_C_VfTable *vftable;
     void *m_unk0;
     CGUnitData *m_data;
     void *m_unk1[2];
@@ -528,6 +528,25 @@ struct CGxTexFlags {
                 uint32_t unknownFlag);
 };
 
+struct FactionTemplate {
+    int m_ID;
+    int m_faction;
+    int m_flags;
+    int m_factionGroup;
+    int m_friendGroup;
+    int m_enemyGroup;
+    int m_enemies[4];
+    int m_friend[4];
+};
+
+template <typename T> struct WowClientDB {
+    T *m_records;
+    int m_numRecords;
+    T **m_recordsById;
+    int m_maxId;
+    int m_loaded;
+};
+
 namespace Lua {
 using lua_pushnil_t = void(__fastcall *)(void *L);
 using lua_isnumber_t = bool(__fastcall *)(void *L, int index);
@@ -620,10 +639,21 @@ extern const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount;
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);
 
+template <typename T> inline const T *DbLookupById(const WowClientDB<T> &db, int id) {
+    if (!db.m_loaded || !db.m_recordsById)
+        return nullptr;
+
+    if (id < 0 || id > db.m_maxId)
+        return nullptr;
+
+    return db.m_recordsById[id];
+}
+
 extern C3Vector *s_blipVertices;
 extern TexCoord &texCoords;
 extern C3Vector &normal;
 extern unsigned short *vertIndices;
 extern const float &BLIP_HALF;
+extern const WowClientDB<FactionTemplate> &g_factionTemplateDB;
 
 } // namespace Game

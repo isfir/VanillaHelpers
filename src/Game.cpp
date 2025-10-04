@@ -87,6 +87,8 @@ TexCoord &texCoords = *reinterpret_cast<TexCoord *>(Offsets::CONST_TEX_COORDS);
 C3Vector &normal = *reinterpret_cast<C3Vector *>(Offsets::CONST_NORMAL_VEC3);
 unsigned short *vertIndices = reinterpret_cast<unsigned short *>(Offsets::CONST_VERT_INDICES);
 const float &BLIP_HALF = *reinterpret_cast<float *>(Offsets::CONST_BLIP_HALF);
+const WowClientDB<FactionTemplate> &g_factionTemplateDB =
+    *reinterpret_cast<const WowClientDB<FactionTemplate> *>(Offsets::CONST_FACTION_TEMPLATE_DB);
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray) {
     CImVector color = {0xFF, 0xFF, 0xFF, 0xFF}; // White
