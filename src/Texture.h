@@ -14,5 +14,6 @@
 namespace Texture {
 
 void Initialize();
+bool InstallHooks();
 
 } // namespace Texture

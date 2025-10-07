@@ -75,6 +75,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
 
         if (!MtxFilter::InstallHooks())
             return FALSE;
+
+        if (!Texture::InstallHooks())
+            return FALSE;
     } else if (reason == DLL_PROCESS_DETACH) {
         MH_Uninitialize();
     }
