@@ -15,10 +15,12 @@
 #include "Common.h"
 #include "FileIO.h"
 #include "Game.h"
+#include "Allocator.h"
 #include "MinHook.h"
 #include "MtxFilter.h"
 #include "Offsets.h"
 #include "Texture.h"
+
 #include <string>
 
 static Game::ClientInitializeGame_t ClientInitializeGame_o = nullptr;
@@ -52,6 +54,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
     if (reason == DLL_PROCESS_ATTACH) {
         DisableThreadLibraryCalls(hModule);
 
+        Allocator::Initialize();
         Texture::Initialize();
 
         if (MH_Initialize() != MH_OK)
