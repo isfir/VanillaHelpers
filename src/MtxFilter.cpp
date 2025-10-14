@@ -17,11 +17,14 @@
 #include "MinHook.h"
 #include "Offsets.h"
 
+#include <unordered_map>
 #include <unordered_set>
 
 namespace MtxFilter {
 
-static const std::unordered_set<uint32_t> storeMountIds = {
+static Game::CGUnit_C_CreateUnitMount_t CGUnit_C_CreateUnitMount_o = nullptr;
+
+static const std::unordered_set<uint32_t> g_storeMountIds = {
     18253, // Armored Brewfest Ram
     18436, // Tamed Rak'Shiri
     9991,  // Black Zulian Panther
@@ -99,24 +102,46 @@ static const std::unordered_set<uint32_t> storeMountIds = {
     18510, // Turbo-Charged Flying Machine
     20651, // Celestial Steed
     20649, // Invincible
+    18772, // Lovely Pink Furline
+    21343, // Spectral Steed
 };
 
-static Game::CGUnit_C_CreateUnitMount_t CGUnit_C_CreateUnitMount_o = nullptr;
+static const std::unordered_map<uint32_t, std::vector<uint32_t>> g_racialMounts = {
+    {1, {2404, 2405, 2408, 2409, 2410}}, // Human
+    {2, {247, 2327, 2328}},              // Orc
+    {3, {2736, 2785, 2786}},             // Dwarf
+    {4, {6080, 6444, 6448}},             // Night Elf
+    {5, {10670, 10671, 10672}},          // Undead
+    {6, {11641, 12246}},                 // Tauren
+    {8, {6569, 9473, 9475, 9476}},       // Gnome
+    {9, {4806, 6472, 6473}},             // Troll
+    {914, {18240}},                      // High Elf
+    {927, {18319, 18320, 18321}},        // Goblin
+};
 
 static bool g_hideShopMounts = false;
 
 static void __fastcall CGUnit_C_CreateUnitMount_h(Game::CGUnit_C *unitptr) {
-    uint32_t mountDisplayId = unitptr->m_data->m_mountDisplayId;
-    if (g_hideShopMounts && storeMountIds.count(mountDisplayId)) {
+    const uint32_t originalDisplayId = unitptr->m_data->m_mountDisplayId;
+
+    if (g_hideShopMounts && g_storeMountIds.count(originalDisplayId)) {
         const auto *factionTemplate = Game::DbLookupById<Game::FactionTemplate>(
             Game::g_factionTemplateDB, unitptr->m_data->m_factionTemplate);
-        unitptr->m_data->m_mountDisplayId =
-            factionTemplate && factionTemplate->m_factionGroup & 0x4 ? 247 : 2404;
-        CGUnit_C_CreateUnitMount_o(unitptr);
-        unitptr->m_data->m_mountDisplayId = mountDisplayId;
-    } else {
-        CGUnit_C_CreateUnitMount_o(unitptr);
+
+        if (factionTemplate) {
+            const auto it = g_racialMounts.find(factionTemplate->m_faction);
+            if (it != g_racialMounts.end() && !it->second.empty()) {
+                const auto &racialMounts = it->second;
+                const uint32_t idx = unitptr->m_guid % racialMounts.size();
+                unitptr->m_data->m_mountDisplayId = racialMounts[idx];
+                CGUnit_C_CreateUnitMount_o(unitptr);
+                unitptr->m_data->m_mountDisplayId = originalDisplayId;
+                return;
+            }
+        }
     }
+
+    CGUnit_C_CreateUnitMount_o(unitptr);
 }
 
 static bool __fastcall VisibleObjectsMountsCallback(void *context, void *edx, uint64_t guid) {
@@ -126,7 +151,7 @@ static bool __fastcall VisibleObjectsMountsCallback(void *context, void *edx, ui
         return true;
 
     uint32_t mountDisplayId = unitptr->m_data->m_mountDisplayId;
-    if (mountDisplayId > 0 && storeMountIds.count(mountDisplayId)) {
+    if (mountDisplayId > 0 && g_storeMountIds.count(mountDisplayId)) {
         Game::CGUnit_C_RefreshMount(unitptr, true);
     }
 
@@ -138,7 +163,7 @@ static bool __fastcall HideShopMountsCallback(void *CVar, const char *oldValue,
     if (!newValue || (newValue[0] != '0' && newValue[0] != '1') || newValue[1] != '\0')
         return false;
     g_hideShopMounts = newValue[0] == '1';
-    if (oldValue && oldValue[0] != newValue[0]) {
+    if (oldValue && oldValue[0] != newValue[0] && Game::ClntObjMgrGetActivePlayer() > 0) {
         Game::ClntObjMgrEnumVisibleObjects(VisibleObjectsMountsCallback, nullptr);
     }
     return true;
