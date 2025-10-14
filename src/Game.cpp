@@ -64,6 +64,9 @@ const ClntObjMgrEnumVisibleObjects_t ClntObjMgrEnumVisibleObjects =
         Offsets::FUN_CLNT_OBJ_MGR_ENUM_VISIBLE_OBJECTS);
 const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount =
     reinterpret_cast<CGUnit_C_RefreshMount_t>(Offsets::FUN_CGUNIT_C_REFRESH_MOUNT);
+const SFile_Open_t SFile_Open = reinterpret_cast<SFile_Open_t>(Offsets::FUN_SFILE_OPEN);
+const SFile_Read_t SFile_Read = reinterpret_cast<SFile_Read_t>(Offsets::FUN_SFILE_READ);
+const SFile_Close_t SFile_Close = reinterpret_cast<SFile_Close_t>(Offsets::FUN_SFILE_CLOSE);
 
 CStatus::CStatus()
     : vftable(reinterpret_cast<void *>(Offsets::VFTABLE_CSTATUS)), m_unk(8),

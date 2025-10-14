@@ -15,5 +15,6 @@ namespace Texture {
 
 void Initialize();
 bool InstallHooks();
+void InstallCharacterSkin();
 
 } // namespace Texture

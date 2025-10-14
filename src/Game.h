@@ -19,7 +19,8 @@ namespace Game {
 
 struct HTEXTURE__; // Don't know real struct
 struct CGxTex;     // Don't know real struct
-struct CWorld;     // Don't know real struct
+struct CWorld;     // don't know real struct
+struct SFile;      // don't know real struct
 
 enum TYPE_MASK {
     TYPEMASK_OBJECT = 0x1,
@@ -164,6 +165,16 @@ struct CImVector {
     unsigned char g;
     unsigned char r;
     unsigned char a;
+};
+
+struct Point {
+    uint32_t x;
+    uint32_t y;
+};
+
+struct Rectangle {
+    uint32_t width;
+    uint32_t heigth;
 };
 
 struct TSLink {
@@ -613,9 +624,15 @@ using CVar_Register_t = void(__fastcall *)(const char *name, const char *help, u
                                            const char *defaultValue, CVar_Callback_t callback,
                                            CVAR_CATEGORY category, bool consoleOnly,
                                            void *userData);
-using ClientInitializeGame_t = void(__fastcall *)(uint32_t, C3Vector);
+using InitializeGlobal_t = bool(__fastcall *)();
 using CGUnit_C_CreateUnitMount_t = void(__thiscall *)(CGUnit_C *thisptr);
 using CGUnit_C_RefreshMount_t = void(__thiscall *)(CGUnit_C *thisptr, bool reset);
+using TextureBlit_t = void(__stdcall *)(void *, void *, Point *offset0, Point *offset1,
+                                        Rectangle *copy, Rectangle *extent);
+using SFile_Open_t = uint64_t(__stdcall *)(const char *filename, SFile **outFile);
+using SFile_Read_t = uint64_t(__stdcall *)(SFile *file, void *buffer, uint32_t bytesToRead,
+                                           uint32_t *bytesRead, void *reserved1, void *reserved2);
+using SFile_Close_t = uint64_t(__stdcall *)(SFile *file);
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;
@@ -636,6 +653,9 @@ extern const FrameScript_Execute_t FrameScript_Execute;
 extern const CVar_Register_t CVar_Register;
 extern const ClntObjMgrEnumVisibleObjects_t ClntObjMgrEnumVisibleObjects;
 extern const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount;
+extern const SFile_Open_t SFile_Open;
+extern const SFile_Read_t SFile_Read;
+extern const SFile_Close_t SFile_Close;
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);
 
