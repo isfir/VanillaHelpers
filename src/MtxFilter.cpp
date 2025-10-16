@@ -120,11 +120,13 @@ static const std::unordered_map<uint32_t, std::vector<uint32_t>> g_racialMounts 
 };
 
 static bool g_hideShopMounts = false;
+static bool g_hideTurtleMount = false;
 
 static void __fastcall CGUnit_C_CreateUnitMount_h(Game::CGUnit_C *unitptr) {
     const uint32_t originalDisplayId = unitptr->m_data->m_mountDisplayId;
 
-    if (g_hideShopMounts && g_storeMountIds.count(originalDisplayId)) {
+    if ((g_hideShopMounts && g_storeMountIds.count(originalDisplayId)) ||
+        (g_hideTurtleMount && originalDisplayId == 17158)) {
         const auto *factionTemplate = Game::DbLookupById<Game::FactionTemplate>(
             Game::g_factionTemplateDB, unitptr->m_data->m_factionTemplate);
 
@@ -144,7 +146,7 @@ static void __fastcall CGUnit_C_CreateUnitMount_h(Game::CGUnit_C *unitptr) {
     CGUnit_C_CreateUnitMount_o(unitptr);
 }
 
-static bool __fastcall VisibleObjectsMountsCallback(void *context, void *edx, uint64_t guid) {
+static bool __fastcall HideShopMountsObjectsCallback(void *context, void *edx, uint64_t guid) {
     auto *unitptr = reinterpret_cast<Game::CGUnit_C *>(
         Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_UNIT, nullptr, guid, 0));
     if (unitptr == nullptr)
@@ -158,14 +160,45 @@ static bool __fastcall VisibleObjectsMountsCallback(void *context, void *edx, ui
     return true;
 }
 
-static bool __fastcall HideShopMountsCallback(void *CVar, const char *oldValue,
-                                              const char *newValue, void *userData) {
+static bool __fastcall HideTurtleMountObjectsCallback(void *context, void *edx, uint64_t guid) {
+    auto *unitptr = reinterpret_cast<Game::CGUnit_C *>(
+        Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_UNIT, nullptr, guid, 0));
+    if (unitptr == nullptr)
+        return true;
+
+    uint32_t mountDisplayId = unitptr->m_data->m_mountDisplayId;
+    if (mountDisplayId == 17158) {
+        Game::CGUnit_C_RefreshMount(unitptr, true);
+    }
+
+    return true;
+}
+
+static bool __fastcall HideShopMountsCVarCallback(void *CVar, const char *oldValue,
+                                                  const char *newValue, void *userData) {
     if (!newValue || (newValue[0] != '0' && newValue[0] != '1') || newValue[1] != '\0')
         return false;
+
     g_hideShopMounts = newValue[0] == '1';
+
     if (oldValue && oldValue[0] != newValue[0] && Game::ClntObjMgrGetActivePlayer() > 0) {
-        Game::ClntObjMgrEnumVisibleObjects(VisibleObjectsMountsCallback, nullptr);
+        Game::ClntObjMgrEnumVisibleObjects(HideShopMountsObjectsCallback, nullptr);
     }
+
+    return true;
+}
+
+static bool __fastcall HideTurtleMountCVarCallback(void *CVar, const char *oldValue,
+                                                   const char *newValue, void *userData) {
+    if (!newValue || (newValue[0] != '0' && newValue[0] != '1') || newValue[1] != '\0')
+        return false;
+
+    g_hideTurtleMount = newValue[0] == '1';
+
+    if (oldValue && oldValue[0] != newValue[0] && Game::ClntObjMgrGetActivePlayer() > 0) {
+        Game::ClntObjMgrEnumVisibleObjects(HideTurtleMountObjectsCallback, nullptr);
+    }
+
     return true;
 }
 
@@ -176,8 +209,10 @@ bool InstallHooks() {
     return TRUE;
 }
 void Initialize() {
-    Game::CVar_Register("VH_HideShopMounts", "Hide Shop Mounts", 1, "0", HideShopMountsCallback,
+    Game::CVar_Register("VH_HideShopMounts", "Hide Shop Mounts", 1, "0", HideShopMountsCVarCallback,
                         Game::CVAR_CATEGORY::GRAPHICS, false, nullptr);
+    Game::CVar_Register("VH_HideTurtleMount", "Hide Turtle Mount", 1, "0",
+                        HideTurtleMountCVarCallback, Game::CVAR_CATEGORY::GRAPHICS, false, nullptr);
 }
 
 } // namespace MtxFilter
