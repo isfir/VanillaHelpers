@@ -40,6 +40,20 @@ static uint32_t g_baramBase = 0;
 static uint32_t g_headBase = 0;
 static uint32_t g_prevBase = 0;
 
+static void PatchTextureSizeLimit() {
+    const uint8_t ja = 0x87;
+    Common::PatchBytes(reinterpret_cast<void *>(Offsets::PATCH_TEXTURE_SIZE_1 + 1), &ja,
+                       sizeof(ja));
+    Common::PatchBytes(reinterpret_cast<void *>(Offsets::PATCH_TEXTURE_SIZE_2 + 1), &ja,
+                       sizeof(ja));
+
+    const uint32_t maxSize = 0x400; // 1024
+    Common::PatchBytes(reinterpret_cast<void *>(Offsets::PATCH_MIPBITS_ALLOC_PUSH + 1), &maxSize,
+                       sizeof(maxSize));
+    Common::PatchBytes(reinterpret_cast<void *>(Offsets::PATCH_MIPBITS_ALLOC_MOV_EDX + 1), &maxSize,
+                       sizeof(maxSize));
+}
+
 static __declspec(naked) void AsyncTextureWait_Atomic_h() {
     __asm {
         // Save req pointer: req = [EDI + 0x138]
@@ -312,12 +326,7 @@ static void __stdcall TextureBlitBlend_h(void *unk0, void *unk1, Game::Point *ds
 }
 
 void Initialize() {
-    // Enable 1024-sized textures
-    const uint8_t ja = 0x87;
-    Common::PatchBytes(reinterpret_cast<void *>(Offsets::PATCH_TEXTURE_SIZE_1 + 1), &ja,
-                       sizeof(ja));
-    Common::PatchBytes(reinterpret_cast<void *>(Offsets::PATCH_TEXTURE_SIZE_2 + 1), &ja,
-                       sizeof(ja));
+    PatchTextureSizeLimit();
 
     // Currently crashes with a buffer bigger than 2 MiB while loading textures bigger than 2 MiB
     InstallNewAsyncFileBuffer();
