@@ -1,5 +1,6 @@
 /build
 /external
+/build-win32
 
 # Prerequisites
 *.d

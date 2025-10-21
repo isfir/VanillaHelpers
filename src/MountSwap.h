@@ -11,9 +11,10 @@
 // You should have received a copy of the GNU Lessed General Public License along with
 // VanillaHelpers. If not, see <https://www.gnu.org/licenses/>.
 
-namespace MtxFilter {
+namespace MountSwap {
 
 bool InstallHooks();
 void Initialize();
+void RegisterLuaFunctions();
 
-} // namespace MtxFilter
+} // namespace MountSwap

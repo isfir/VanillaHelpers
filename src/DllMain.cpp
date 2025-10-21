@@ -17,7 +17,7 @@
 #include "Game.h"
 #include "Allocator.h"
 #include "MinHook.h"
-#include "MtxFilter.h"
+#include "MountSwap.h"
 #include "Offsets.h"
 #include "Texture.h"
 
@@ -31,7 +31,7 @@ static void __fastcall InvalidFunctionPtrCheck_h() {}
 
 static bool __fastcall InitializeGlobal_h() {
     bool ok = InitializeGlobal_o();
-    MtxFilter::Initialize();
+    MountSwap::Initialize();
     Texture::InstallCharacterSkin();
     return ok;
 }
@@ -50,6 +50,7 @@ static void __fastcall LoadScriptFunctions_h() {
     LoadScriptFunctions_o();
     FileIO::RegisterLuaFunctions();
     Blips::RegisterLuaFunctions();
+    MountSwap::RegisterLuaFunctions();
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
@@ -77,7 +78,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
         if (!Blips::InstallHooks())
             return FALSE;
 
-        if (!MtxFilter::InstallHooks())
+        if (!MountSwap::InstallHooks())
             return FALSE;
 
         if (!Texture::InstallHooks())
