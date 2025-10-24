@@ -566,6 +566,10 @@ using lua_pushnumber_t = void(__fastcall *)(void *L, double value);
 using lua_isstring_t = bool(__fastcall *)(void *L, int index);
 using lua_tostring_t = const char *(__fastcall *)(void *L, int index);
 using lua_pushstring_t = void(__fastcall *)(void *L, const char *);
+using lua_gettable_t = void(__fastcall *)(void *L, int index);
+using lua_type_t = int(__fastcall *)(void *L, int index);
+using lua_next_t = int(__fastcall *)(void *L, int index);
+using lua_settop_t = void(__fastcall *)(void *L, int index);
 using lua_error_t = void(__cdecl *)(void *L, const char *);
 
 extern const lua_pushnil_t PushNil;
@@ -575,7 +579,14 @@ extern const lua_pushnumber_t PushNumber;
 extern const lua_isstring_t IsString;
 extern const lua_tostring_t ToString;
 extern const lua_pushstring_t PushString;
+extern const lua_gettable_t GetTable;
+extern const lua_type_t Type;
+extern const lua_next_t Next;
+extern const lua_settop_t SetTop;
 extern const lua_error_t Error;
+
+inline bool IsTable(void *L, int index) { return Type(L, index) == 5; }
+inline void Pop(void *L, int index) { SetTop(L, -(index)-1); }
 } // namespace Lua
 
 using FrameScript_RegisterFunction_t = void(__fastcall *)(const char *name, uintptr_t func);
@@ -633,6 +644,10 @@ using SFile_Open_t = uint64_t(__stdcall *)(const char *filename, SFile **outFile
 using SFile_Read_t = uint64_t(__stdcall *)(SFile *file, void *buffer, uint32_t bytesToRead,
                                            uint32_t *bytesRead, void *reserved1, void *reserved2);
 using SFile_Close_t = uint64_t(__stdcall *)(SFile *file);
+using CGObject_C_SetBlock_t = int(__thiscall *)(Game::CGObject_C *thisptr, uint32_t fieldIndex,
+                                                uint32_t value);
+using CGUnit_C_UpdateDisplayInfo_t = void(__thiscall *)(Game::CGUnit_C *thisptr);
+using CGUnit_C_Destructor_t = void(__thiscall *)(Game::CGUnit_C *thisptr);
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;
@@ -656,6 +671,7 @@ extern const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount;
 extern const SFile_Open_t SFile_Open;
 extern const SFile_Read_t SFile_Read;
 extern const SFile_Close_t SFile_Close;
+extern const CGUnit_C_UpdateDisplayInfo_t CGUnit_C_UpdateDisplayInfo;
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);
 

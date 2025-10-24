@@ -11,12 +11,13 @@
 // You should have received a copy of the GNU Lessed General Public License along with
 // VanillaHelpers. If not, see <https://www.gnu.org/licenses/>.
 
+#include "Allocator.h"
 #include "Blips.h"
 #include "Common.h"
 #include "FileIO.h"
 #include "Game.h"
-#include "Allocator.h"
 #include "MinHook.h"
+#include "Morph.h"
 #include "MtxFilter.h"
 #include "Offsets.h"
 #include "Texture.h"
@@ -43,6 +44,7 @@ static bool __fastcall FrameScript_Initialize_h() {
         "\nVANILLA_HELPERS_VERSION=" + std::to_string(VANILLAHELPERS_VERSION_VALUE);
     Game::FrameScript_Execute(luaScript.c_str(), "VanillaHelpers.lua");
     Blips::Initialize();
+    Morph::Initialize();
     return true;
 }
 
@@ -50,6 +52,7 @@ static void __fastcall LoadScriptFunctions_h() {
     LoadScriptFunctions_o();
     FileIO::RegisterLuaFunctions();
     Blips::RegisterLuaFunctions();
+    Morph::RegisterLuaFunctions();
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
@@ -81,6 +84,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
             return FALSE;
 
         if (!Texture::InstallHooks())
+            return FALSE;
+
+        if (!Morph::InstallHooks())
             return FALSE;
     } else if (reason == DLL_PROCESS_DETACH) {
         MH_Uninitialize();

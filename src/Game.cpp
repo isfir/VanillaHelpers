@@ -24,6 +24,10 @@ const lua_pushnumber_t PushNumber = reinterpret_cast<lua_pushnumber_t>(Offsets::
 const lua_isstring_t IsString = reinterpret_cast<lua_isstring_t>(Offsets::LUA_IS_STRING);
 const lua_tostring_t ToString = reinterpret_cast<lua_tostring_t>(Offsets::LUA_TO_STRING);
 const lua_pushstring_t PushString = reinterpret_cast<lua_pushstring_t>(Offsets::LUA_PUSH_STRING);
+const lua_gettable_t GetTable = reinterpret_cast<lua_gettable_t>(Offsets::LUA_GET_TABLE);
+const lua_type_t Type = reinterpret_cast<lua_type_t>(Offsets::LUA_TYPE);
+const lua_next_t Next = reinterpret_cast<lua_next_t>(Offsets::LUA_NEXT);
+const lua_settop_t SetTop = reinterpret_cast<lua_settop_t>(Offsets::LUA_SET_TOP);
 const lua_error_t Error = reinterpret_cast<lua_error_t>(Offsets::LUA_ERROR);
 } // namespace Lua
 
@@ -67,6 +71,8 @@ const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount =
 const SFile_Open_t SFile_Open = reinterpret_cast<SFile_Open_t>(Offsets::FUN_SFILE_OPEN);
 const SFile_Read_t SFile_Read = reinterpret_cast<SFile_Read_t>(Offsets::FUN_SFILE_READ);
 const SFile_Close_t SFile_Close = reinterpret_cast<SFile_Close_t>(Offsets::FUN_SFILE_CLOSE);
+const CGUnit_C_UpdateDisplayInfo_t CGUnit_C_UpdateDisplayInfo =
+    reinterpret_cast<CGUnit_C_UpdateDisplayInfo_t>(Offsets::FUN_CGUNIT_C_UPDATE_DISPLAY_INFO);
 
 CStatus::CStatus()
     : vftable(reinterpret_cast<void *>(Offsets::VFTABLE_CSTATUS)), m_unk(8),
