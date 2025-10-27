@@ -15,6 +15,6 @@ namespace Blips {
 
 bool InstallHooks();
 void RegisterLuaFunctions();
-void Initialize();
+void Reset();
 
 } // namespace Blips

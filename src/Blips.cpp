@@ -482,7 +482,7 @@ void RegisterLuaFunctions() {
                                        reinterpret_cast<uintptr_t>(&Script_SetObjectTypeBlip));
 }
 
-void Initialize() {
+void Reset() {
     g_trackedUnitBlips.clear();
     g_trackedUnitFlagsBlips.clear();
     g_trackedGameObjectTypesBlips.clear();

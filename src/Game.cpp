@@ -71,6 +71,12 @@ const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount =
 const SFile_Open_t SFile_Open = reinterpret_cast<SFile_Open_t>(Offsets::FUN_SFILE_OPEN);
 const SFile_Read_t SFile_Read = reinterpret_cast<SFile_Read_t>(Offsets::FUN_SFILE_READ);
 const SFile_Close_t SFile_Close = reinterpret_cast<SFile_Close_t>(Offsets::FUN_SFILE_CLOSE);
+const CGPlayer_C_ApplyInvComponentToModel_t CGPlayer_C_ApplyInvComponentToModel =
+    reinterpret_cast<CGPlayer_C_ApplyInvComponentToModel_t>(
+        Offsets::FUN_CGPLAYER_C_APPLY_INV_COMPONENT_TO_MODEL);
+const ClearAppearanceSlot_t ClearAppearanceSlot =
+    reinterpret_cast<ClearAppearanceSlot_t>(Offsets::FUN_CLEAR_APPEARANCE_SLOT);
+
 const CGUnit_C_UpdateDisplayInfo_t CGUnit_C_UpdateDisplayInfo =
     reinterpret_cast<CGUnit_C_UpdateDisplayInfo_t>(Offsets::FUN_CGUNIT_C_UPDATE_DISPLAY_INFO);
 

@@ -15,6 +15,6 @@ namespace Morph {
 
 bool InstallHooks();
 void RegisterLuaFunctions();
-void Initialize();
+void Reset();
 
 } // namespace Morph

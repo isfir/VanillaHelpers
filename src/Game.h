@@ -254,189 +254,189 @@ enum EUnitFields {
 };
 
 enum EPlayerFields {
-    PLAYER_DUEL_ARBITER = UNIT_END + 0x0,                 // 0x0B6 - Size: 2 - Type: GUID
-    PLAYER_FLAGS = UNIT_END + 0x2,                        // 0x0B8 - Size: 1 - Type: INT
-    PLAYER_GUILDID = UNIT_END + 0x3,                      // 0x0B9 - Size: 1 - Type: INT
-    PLAYER_GUILDRANK = UNIT_END + 0x4,                    // 0x0BA - Size: 1 - Type: INT
-    PLAYER_BYTES = UNIT_END + 0x5,                        // 0x0BB - Size: 1 - Type: BYTES
-    PLAYER_BYTES_2 = UNIT_END + 0x6,                      // 0x0BC - Size: 1 - Type: BYTES
-    PLAYER_BYTES_3 = UNIT_END + 0x7,                      // 0x0BD - Size: 1 - Type: BYTES
-    PLAYER_DUEL_TEAM = UNIT_END + 0x8,                    // 0x0BE - Size: 1 - Type: INT
-    PLAYER_GUILD_TIMESTAMP = UNIT_END + 0x9,              // 0x0BF - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_1_1 = UNIT_END + 0xA,                // 0x0C0 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_1_2 = UNIT_END + 0xB,                // 0x0C1 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_2_1 = UNIT_END + 0xD,                // 0x0C3 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_2_2 = UNIT_END + 0xE,                // 0x0C4 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_3_1 = UNIT_END + 0x10,               // 0x0C6 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_3_2 = UNIT_END + 0x11,               // 0x0C7 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_4_1 = UNIT_END + 0x13,               // 0x0C9 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_4_2 = UNIT_END + 0x14,               // 0x0CA - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_5_1 = UNIT_END + 0x16,               // 0x0CC - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_5_2 = UNIT_END + 0x17,               // 0x0CD - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_6_1 = UNIT_END + 0x19,               // 0x0CF - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_6_2 = UNIT_END + 0x1A,               // 0x0D0 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_7_1 = UNIT_END + 0x1C,               // 0x0D2 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_7_2 = UNIT_END + 0x1D,               // 0x0D3 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_8_1 = UNIT_END + 0x1F,               // 0x0D5 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_8_2 = UNIT_END + 0x20,               // 0x0D6 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_9_1 = UNIT_END + 0x22,               // 0x0D8 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_9_2 = UNIT_END + 0x23,               // 0x0D9 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_10_1 = UNIT_END + 0x25,              // 0x0DB - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_10_2 = UNIT_END + 0x26,              // 0x0DC - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_11_1 = UNIT_END + 0x28,              // 0x0DE - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_11_2 = UNIT_END + 0x29,              // 0x0DF - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_12_1 = UNIT_END + 0x2B,              // 0x0E1 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_12_2 = UNIT_END + 0x2C,              // 0x0E2 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_13_1 = UNIT_END + 0x2E,              // 0x0E4 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_13_2 = UNIT_END + 0x2F,              // 0x0E5 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_14_1 = UNIT_END + 0x31,              // 0x0E7 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_14_2 = UNIT_END + 0x32,              // 0x0E8 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_15_1 = UNIT_END + 0x34,              // 0x0EA - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_15_2 = UNIT_END + 0x35,              // 0x0EB - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_16_1 = UNIT_END + 0x37,              // 0x0ED - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_16_2 = UNIT_END + 0x38,              // 0x0EE - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_17_1 = UNIT_END + 0x3A,              // 0x0F0 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_17_2 = UNIT_END + 0x3B,              // 0x0F1 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_18_1 = UNIT_END + 0x3D,              // 0x0F3 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_18_2 = UNIT_END + 0x3E,              // 0x0F4 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_19_1 = UNIT_END + 0x40,              // 0x0F6 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_19_2 = UNIT_END + 0x41,              // 0x0F7 - Size: 2 - Type: INT
-    PLAYER_QUEST_LOG_20_1 = UNIT_END + 0x43,              // 0x0F9 - Size: 1 - Type: INT
-    PLAYER_QUEST_LOG_20_2 = UNIT_END + 0x44,              // 0x0FA - Size: 2 - Type: INT
-    PLAYER_VISIBLE_ITEM_1_CREATOR = UNIT_END + 0x46,      // 0x0FC - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_1_0 = UNIT_END + 0x48,            // 0x0FE - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_1_PROPERTIES = UNIT_END + 0x50,   // 0x106 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_1_PAD = UNIT_END + 0x51,          // 0x107 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_2_CREATOR = UNIT_END + 0x52,      // 0x108 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_2_0 = UNIT_END + 0x54,            // 0x10A - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_2_PROPERTIES = UNIT_END + 0x5C,   // 0x112 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_2_PAD = UNIT_END + 0x5D,          // 0x113 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_3_CREATOR = UNIT_END + 0x5E,      // 0x114 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_3_0 = UNIT_END + 0x60,            // 0x116 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_3_PROPERTIES = UNIT_END + 0x68,   // 0x11E - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_3_PAD = UNIT_END + 0x69,          // 0x11F - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_4_CREATOR = UNIT_END + 0x6A,      // 0x120 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_4_0 = UNIT_END + 0x6C,            // 0x122 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_4_PROPERTIES = UNIT_END + 0x74,   // 0x12A - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_4_PAD = UNIT_END + 0x75,          // 0x12B - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_5_CREATOR = UNIT_END + 0x76,      // 0x12C - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_5_0 = UNIT_END + 0x78,            // 0x12E - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_5_PROPERTIES = UNIT_END + 0x80,   // 0x136 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_5_PAD = UNIT_END + 0x81,          // 0x137 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_6_CREATOR = UNIT_END + 0x82,      // 0x138 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_6_0 = UNIT_END + 0x84,            // 0x13A - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_6_PROPERTIES = UNIT_END + 0x8C,   // 0x142 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_6_PAD = UNIT_END + 0x8D,          // 0x143 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_7_CREATOR = UNIT_END + 0x8E,      // 0x144 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_7_0 = UNIT_END + 0x90,            // 0x146 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_7_PROPERTIES = UNIT_END + 0x98,   // 0x14E - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_7_PAD = UNIT_END + 0x99,          // 0x14F - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_8_CREATOR = UNIT_END + 0x9A,      // 0x150 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_8_0 = UNIT_END + 0x9C,            // 0x152 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_8_PROPERTIES = UNIT_END + 0xA4,   // 0x15A - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_8_PAD = UNIT_END + 0xA5,          // 0x15B - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_9_CREATOR = UNIT_END + 0xA6,      // 0x15C - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_9_0 = UNIT_END + 0xA8,            // 0x15E - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_9_PROPERTIES = UNIT_END + 0xB0,   // 0x166 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_9_PAD = UNIT_END + 0xB1,          // 0x167 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_10_CREATOR = UNIT_END + 0xB2,     // 0x168 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_10_0 = UNIT_END + 0xB4,           // 0x16A - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_10_PROPERTIES = UNIT_END + 0xBC,  // 0x172 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_10_PAD = UNIT_END + 0xBD,         // 0x173 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_11_CREATOR = UNIT_END + 0xBE,     // 0x174 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_11_0 = UNIT_END + 0xC0,           // 0x176 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_11_PROPERTIES = UNIT_END + 0xC8,  // 0x17E - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_11_PAD = UNIT_END + 0xC9,         // 0x17F - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_12_CREATOR = UNIT_END + 0xCA,     // 0x180 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_12_0 = UNIT_END + 0xCC,           // 0x182 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_12_PROPERTIES = UNIT_END + 0xD4,  // 0x18A - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_12_PAD = UNIT_END + 0xD5,         // 0x18B - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_13_CREATOR = UNIT_END + 0xD6,     // 0x18C - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_13_0 = UNIT_END + 0xD8,           // 0x18E - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_13_PROPERTIES = UNIT_END + 0xE0,  // 0x196 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_13_PAD = UNIT_END + 0xE1,         // 0x197 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_14_CREATOR = UNIT_END + 0xE2,     // 0x198 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_14_0 = UNIT_END + 0xE4,           // 0x19A - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_14_PROPERTIES = UNIT_END + 0xEC,  // 0x1A2 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_14_PAD = UNIT_END + 0xED,         // 0x1A3 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_15_CREATOR = UNIT_END + 0xEE,     // 0x1A4 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_15_0 = UNIT_END + 0xF0,           // 0x1A6 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_15_PROPERTIES = UNIT_END + 0xF8,  // 0x1AE - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_15_PAD = UNIT_END + 0xF9,         // 0x1AF - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_16_CREATOR = UNIT_END + 0xFA,     // 0x1B0 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_16_0 = UNIT_END + 0xFC,           // 0x1B2 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_16_PROPERTIES = UNIT_END + 0x104, // 0x1BA - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_16_PAD = UNIT_END + 0x105,        // 0x1BB - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_17_CREATOR = UNIT_END + 0x106,    // 0x1BC - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_17_0 = UNIT_END + 0x108,          // 0x1BE - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_17_PROPERTIES = UNIT_END + 0x110, // 0x1C6 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_17_PAD = UNIT_END + 0x111,        // 0x1C7 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_18_CREATOR = UNIT_END + 0x112,    // 0x1C8 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_18_0 = UNIT_END + 0x114,          // 0x1CA - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_18_PROPERTIES = UNIT_END + 0x11C, // 0x1D2 - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_18_PAD = UNIT_END + 0x11D,        // 0x1D3 - Size: 1 - Type: INT
-    PLAYER_VISIBLE_ITEM_19_CREATOR = UNIT_END + 0x11E,    // 0x1D4 - Size: 2 - Type: GUID
-    PLAYER_VISIBLE_ITEM_19_0 = UNIT_END + 0x120,          // 0x1D6 - Size: 8 - Type: INT
-    PLAYER_VISIBLE_ITEM_19_PROPERTIES = UNIT_END + 0x128, // 0x1DE - Size: 1 - Type: TWO_SHORT
-    PLAYER_VISIBLE_ITEM_19_PAD = UNIT_END + 0x129,        // 0x1DF - Size: 1 - Type: INT
-    PLAYER_FIELD_INV_SLOT_HEAD = UNIT_END + 0x12A,        // 0x1E0 - Size: 46 - Type: GUID
-    PLAYER_FIELD_PACK_SLOT_1 = UNIT_END + 0x158,          // 0x20E - Size: 32 - Type: GUID
-    PLAYER_FIELD_BANK_SLOT_1 = UNIT_END + 0x178,          // 0x22E - Size: 48 - Type: GUID
-    PLAYER_FIELD_BANKBAG_SLOT_1 = UNIT_END + 0x1A8,       // 0x25E - Size: 12 - Type: GUID
-    PLAYER_FIELD_VENDORBUYBACK_SLOT_1 = UNIT_END + 0x1B4, // 0x26A - Size: 24 - Type: GUID
-    PLAYER_FIELD_KEYRING_SLOT_1 = UNIT_END + 0x1CC,       // 0x282 - Size: 64 - Type: GUID
-    PLAYER_FARSIGHT = UNIT_END + 0x20C,                   // 0x2C2 - Size: 2 - Type: GUID
-    PLAYER_FIELD_COMBO_TARGET = UNIT_END + 0x20E,         // 0x2C4 - Size: 2 - Type: GUID
-    PLAYER_XP = UNIT_END + 0x210,                         // 0x2C6 - Size: 1 - Type: INT
-    PLAYER_NEXT_LEVEL_XP = UNIT_END + 0x211,              // 0x2C7 - Size: 1 - Type: INT
-    PLAYER_SKILL_INFO_1_1 = UNIT_END + 0x212,             // 0x2C8 - Size: 384 - Type: TWO_SHORT
-    PLAYER_CHARACTER_POINTS1 = UNIT_END + 0x392,          // 0x448 - Size: 1 - Type: INT
-    PLAYER_CHARACTER_POINTS2 = UNIT_END + 0x393,          // 0x449 - Size: 1 - Type: INT
-    PLAYER_TRACK_CREATURES = UNIT_END + 0x394,            // 0x44A - Size: 1 - Type: INT
-    PLAYER_TRACK_RESOURCES = UNIT_END + 0x395,            // 0x44B - Size: 1 - Type: INT
-    PLAYER_BLOCK_PERCENTAGE = UNIT_END + 0x396,           // 0x44C - Size: 1 - Type: FLOAT
-    PLAYER_DODGE_PERCENTAGE = UNIT_END + 0x397,           // 0x44D - Size: 1 - Type: FLOAT
-    PLAYER_PARRY_PERCENTAGE = UNIT_END + 0x398,           // 0x44E - Size: 1 - Type: FLOAT
-    PLAYER_CRIT_PERCENTAGE = UNIT_END + 0x399,            // 0x44F - Size: 1 - Type: FLOAT
-    PLAYER_RANGED_CRIT_PERCENTAGE = UNIT_END + 0x39A,     // 0x450 - Size: 1 - Type: FLOAT
-    PLAYER_EXPLORED_ZONES_1 = UNIT_END + 0x39B,           // 0x451 - Size: 64 - Type: BYTES
-    PLAYER_REST_STATE_EXPERIENCE = UNIT_END + 0x3DB,      // 0x491 - Size: 1 - Type: INT
-    PLAYER_FIELD_COINAGE = UNIT_END + 0x3DC,              // 0x492 - Size: 1 - Type: INT
-    PLAYER_FIELD_POSSTAT0 = UNIT_END + 0x3DD,             // 0x493 - Size: 1 - Type: INT
-    PLAYER_FIELD_POSSTAT1 = UNIT_END + 0x3DE,             // 0x494 - Size: 1 - Type: INT
-    PLAYER_FIELD_POSSTAT2 = UNIT_END + 0x3DF,             // 0x495 - Size: 1 - Type: INT
-    PLAYER_FIELD_POSSTAT3 = UNIT_END + 0x3E0,             // 0x496 - Size: 1 - Type: INT
-    PLAYER_FIELD_POSSTAT4 = UNIT_END + 0x3E1,             // 0x497 - Size: 1 - Type: INT
-    PLAYER_FIELD_NEGSTAT0 = UNIT_END + 0x3E2,             // 0x498 - Size: 1 - Type: INT
-    PLAYER_FIELD_NEGSTAT1 = UNIT_END + 0x3E3,             // 0x499 - Size: 1 - Type: INT
-    PLAYER_FIELD_NEGSTAT2 = UNIT_END + 0x3E4,             // 0x49A - Size: 1 - Type: INT
-    PLAYER_FIELD_NEGSTAT3 = UNIT_END + 0x3E5,             // 0x49B - Size: 1 - Type: INT
-    PLAYER_FIELD_NEGSTAT4 = UNIT_END + 0x3E6,             // 0x49C - Size: 1 - Type: INT
-    PLAYER_FIELD_RESISTANCEBUFFMODSPOSITIVE = UNIT_END + 0x3E7, // 0x49D - Size: 7 - Type: INT
-    PLAYER_FIELD_RESISTANCEBUFFMODSNEGATIVE = UNIT_END + 0x3EE, // 0x4A4 - Size: 7 - Type: INT
-    PLAYER_FIELD_MOD_DAMAGE_DONE_POS = UNIT_END + 0x3F5,        // 0x4AB - Size: 7 - Type: INT
-    PLAYER_FIELD_MOD_DAMAGE_DONE_NEG = UNIT_END + 0x3FC,        // 0x4B2 - Size: 7 - Type: INT
-    PLAYER_FIELD_MOD_DAMAGE_DONE_PCT = UNIT_END + 0x403,        // 0x4B9 - Size: 7 - Type: INT
-    PLAYER_FIELD_BYTES = UNIT_END + 0x40A,                      // 0x4C0 - Size: 1 - Type: BYTES
-    PLAYER_AMMO_ID = UNIT_END + 0x40B,                          // 0x4C1 - Size: 1 - Type: INT
-    PLAYER_SELF_RES_SPELL = UNIT_END + 0x40C,                   // 0x4C2 - Size: 1 - Type: INT
-    PLAYER_FIELD_PVP_MEDALS = UNIT_END + 0x40D,                 // 0x4C3 - Size: 1 - Type: INT
-    PLAYER_FIELD_BUYBACK_PRICE_1 = UNIT_END + 0x40E,            // 0x4C4 - Size: 12 - Type: INT
-    PLAYER_FIELD_BUYBACK_TIMESTAMP_1 = UNIT_END + 0x41A,        // 0x4D0 - Size: 12 - Type: INT
-    PLAYER_FIELD_SESSION_KILLS = UNIT_END + 0x426,              // 0x4DC - Size: 1 - Type: TWO_SHORT
-    PLAYER_FIELD_YESTERDAY_KILLS = UNIT_END + 0x427,            // 0x4DD - Size: 1 - Type: TWO_SHORT
-    PLAYER_FIELD_LAST_WEEK_KILLS = UNIT_END + 0x428,            // 0x4DE - Size: 1 - Type: TWO_SHORT
-    PLAYER_FIELD_THIS_WEEK_KILLS = UNIT_END + 0x429,            // 0x4DF - Size: 1 - Type: TWO_SHORT
-    PLAYER_FIELD_THIS_WEEK_CONTRIBUTION = UNIT_END + 0x42A,     // 0x4E0 - Size: 1 - Type: INT
-    PLAYER_FIELD_LIFETIME_HONORBALE_KILLS = UNIT_END + 0x42B,   // 0x4E1 - Size: 1 - Type: INT
-    PLAYER_FIELD_LIFETIME_DISHONORBALE_KILLS = UNIT_END + 0x42C, // 0x4E2 - Size: 1 - Type: INT
-    PLAYER_FIELD_YESTERDAY_CONTRIBUTION = UNIT_END + 0x42D,      // 0x4E3 - Size: 1 - Type: INT
-    PLAYER_FIELD_LAST_WEEK_CONTRIBUTION = UNIT_END + 0x42E,      // 0x4E4 - Size: 1 - Type: INT
-    PLAYER_FIELD_LAST_WEEK_RANK = UNIT_END + 0x42F,              // 0x4E5 - Size: 1 - Type: INT
-    PLAYER_FIELD_BYTES2 = UNIT_END + 0x430,                      // 0x4E6 - Size: 1 - Type: BYTES
-    PLAYER_FIELD_WATCHED_FACTION_INDEX = UNIT_END + 0x431,       // 0x4E7 - Size: 1 - Type: INT
-    PLAYER_FIELD_COMBAT_RATING_1 = UNIT_END + 0x432,             // 0x4E8 - Size: 20 - Type: INT
-    PLAYER_END = UNIT_END + 0x446                                // 0x4FC
+    PLAYER_DUEL_ARBITER = UNIT_END + 0x0,                 // 0x0B0 - Size: 2 - Type: GUID
+    PLAYER_FLAGS = UNIT_END + 0x2,                        // 0x0B2 - Size: 1 - Type: INT
+    PLAYER_GUILDID = UNIT_END + 0x3,                      // 0x0B3 - Size: 1 - Type: INT
+    PLAYER_GUILDRANK = UNIT_END + 0x4,                    // 0x0B4 - Size: 1 - Type: INT
+    PLAYER_BYTES = UNIT_END + 0x5,                        // 0x0B5 - Size: 1 - Type: BYTES
+    PLAYER_BYTES_2 = UNIT_END + 0x6,                      // 0x0B6 - Size: 1 - Type: BYTES
+    PLAYER_BYTES_3 = UNIT_END + 0x7,                      // 0x0B7 - Size: 1 - Type: BYTES
+    PLAYER_DUEL_TEAM = UNIT_END + 0x8,                    // 0x0B8 - Size: 1 - Type: INT
+    PLAYER_GUILD_TIMESTAMP = UNIT_END + 0x9,              // 0x0B9 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_1_1 = UNIT_END + 0xA,                // 0x0BA - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_1_2 = UNIT_END + 0xB,                // 0x0BB - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_2_1 = UNIT_END + 0xD,                // 0x0BD - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_2_2 = UNIT_END + 0xE,                // 0x0BE - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_3_1 = UNIT_END + 0x10,               // 0x0C0 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_3_2 = UNIT_END + 0x11,               // 0x0C1 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_4_1 = UNIT_END + 0x13,               // 0x0C3 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_4_2 = UNIT_END + 0x14,               // 0x0C4 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_5_1 = UNIT_END + 0x16,               // 0x0C6 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_5_2 = UNIT_END + 0x17,               // 0x0C7 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_6_1 = UNIT_END + 0x19,               // 0x0C9 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_6_2 = UNIT_END + 0x1A,               // 0x0CA - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_7_1 = UNIT_END + 0x1C,               // 0x0CC - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_7_2 = UNIT_END + 0x1D,               // 0x0CD - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_8_1 = UNIT_END + 0x1F,               // 0x0CF - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_8_2 = UNIT_END + 0x20,               // 0x0D0 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_9_1 = UNIT_END + 0x22,               // 0x0D2 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_9_2 = UNIT_END + 0x23,               // 0x0D3 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_10_1 = UNIT_END + 0x25,              // 0x0D5 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_10_2 = UNIT_END + 0x26,              // 0x0D6 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_11_1 = UNIT_END + 0x28,              // 0x0D8 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_11_2 = UNIT_END + 0x29,              // 0x0D9 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_12_1 = UNIT_END + 0x2B,              // 0x0DB - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_12_2 = UNIT_END + 0x2C,              // 0x0DC - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_13_1 = UNIT_END + 0x2E,              // 0x0DE - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_13_2 = UNIT_END + 0x2F,              // 0x0DF - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_14_1 = UNIT_END + 0x31,              // 0x0E1 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_14_2 = UNIT_END + 0x32,              // 0x0E2 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_15_1 = UNIT_END + 0x34,              // 0x0E4 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_15_2 = UNIT_END + 0x35,              // 0x0E5 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_16_1 = UNIT_END + 0x37,              // 0x0E7 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_16_2 = UNIT_END + 0x38,              // 0x0E8 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_17_1 = UNIT_END + 0x3A,              // 0x0EA - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_17_2 = UNIT_END + 0x3B,              // 0x0EB - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_18_1 = UNIT_END + 0x3D,              // 0x0ED - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_18_2 = UNIT_END + 0x3E,              // 0x0EE - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_19_1 = UNIT_END + 0x40,              // 0x0F0 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_19_2 = UNIT_END + 0x41,              // 0x0F1 - Size: 2 - Type: INT
+    PLAYER_QUEST_LOG_20_1 = UNIT_END + 0x43,              // 0x0F3 - Size: 1 - Type: INT
+    PLAYER_QUEST_LOG_20_2 = UNIT_END + 0x44,              // 0x0F4 - Size: 2 - Type: INT
+    PLAYER_VISIBLE_ITEM_1_CREATOR = UNIT_END + 0x46,      // 0x0F6 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_1_0 = UNIT_END + 0x48,            // 0x0F8 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_1_PROPERTIES = UNIT_END + 0x50,   // 0x100 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_1_PAD = UNIT_END + 0x51,          // 0x101 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_2_CREATOR = UNIT_END + 0x52,      // 0x102 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_2_0 = UNIT_END + 0x54,            // 0x104 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_2_PROPERTIES = UNIT_END + 0x5C,   // 0x10C - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_2_PAD = UNIT_END + 0x5D,          // 0x10D - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_3_CREATOR = UNIT_END + 0x5E,      // 0x10E - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_3_0 = UNIT_END + 0x60,            // 0x110 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_3_PROPERTIES = UNIT_END + 0x68,   // 0x118 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_3_PAD = UNIT_END + 0x69,          // 0x119 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_4_CREATOR = UNIT_END + 0x6A,      // 0x11A - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_4_0 = UNIT_END + 0x6C,            // 0x11C - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_4_PROPERTIES = UNIT_END + 0x74,   // 0x124 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_4_PAD = UNIT_END + 0x75,          // 0x125 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_5_CREATOR = UNIT_END + 0x76,      // 0x126 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_5_0 = UNIT_END + 0x78,            // 0x128 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_5_PROPERTIES = UNIT_END + 0x80,   // 0x130 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_5_PAD = UNIT_END + 0x81,          // 0x131 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_6_CREATOR = UNIT_END + 0x82,      // 0x132 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_6_0 = UNIT_END + 0x84,            // 0x134 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_6_PROPERTIES = UNIT_END + 0x8C,   // 0x13C - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_6_PAD = UNIT_END + 0x8D,          // 0x13D - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_7_CREATOR = UNIT_END + 0x8E,      // 0x13E - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_7_0 = UNIT_END + 0x90,            // 0x140 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_7_PROPERTIES = UNIT_END + 0x98,   // 0x148 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_7_PAD = UNIT_END + 0x99,          // 0x149 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_8_CREATOR = UNIT_END + 0x9A,      // 0x14A - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_8_0 = UNIT_END + 0x9C,            // 0x14C - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_8_PROPERTIES = UNIT_END + 0xA4,   // 0x154 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_8_PAD = UNIT_END + 0xA5,          // 0x155 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_9_CREATOR = UNIT_END + 0xA6,      // 0x156 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_9_0 = UNIT_END + 0xA8,            // 0x158 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_9_PROPERTIES = UNIT_END + 0xB0,   // 0x160 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_9_PAD = UNIT_END + 0xB1,          // 0x161 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_10_CREATOR = UNIT_END + 0xB2,     // 0x162 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_10_0 = UNIT_END + 0xB4,           // 0x164 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_10_PROPERTIES = UNIT_END + 0xBC,  // 0x16C - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_10_PAD = UNIT_END + 0xBD,         // 0x16D - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_11_CREATOR = UNIT_END + 0xBE,     // 0x16E - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_11_0 = UNIT_END + 0xC0,           // 0x170 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_11_PROPERTIES = UNIT_END + 0xC8,  // 0x178 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_11_PAD = UNIT_END + 0xC9,         // 0x179 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_12_CREATOR = UNIT_END + 0xCA,     // 0x17A - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_12_0 = UNIT_END + 0xCC,           // 0x17C - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_12_PROPERTIES = UNIT_END + 0xD4,  // 0x184 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_12_PAD = UNIT_END + 0xD5,         // 0x185 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_13_CREATOR = UNIT_END + 0xD6,     // 0x186 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_13_0 = UNIT_END + 0xD8,           // 0x188 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_13_PROPERTIES = UNIT_END + 0xE0,  // 0x190 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_13_PAD = UNIT_END + 0xE1,         // 0x191 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_14_CREATOR = UNIT_END + 0xE2,     // 0x192 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_14_0 = UNIT_END + 0xE4,           // 0x194 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_14_PROPERTIES = UNIT_END + 0xEC,  // 0x19C - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_14_PAD = UNIT_END + 0xED,         // 0x19D - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_15_CREATOR = UNIT_END + 0xEE,     // 0x19E - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_15_0 = UNIT_END + 0xF0,           // 0x1A0 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_15_PROPERTIES = UNIT_END + 0xF8,  // 0x1A8 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_15_PAD = UNIT_END + 0xF9,         // 0x1A9 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_16_CREATOR = UNIT_END + 0xFA,     // 0x1AA - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_16_0 = UNIT_END + 0xFC,           // 0x1AC - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_16_PROPERTIES = UNIT_END + 0x104, // 0x1B4 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_16_PAD = UNIT_END + 0x105,        // 0x1B5 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_17_CREATOR = UNIT_END + 0x106,    // 0x1B6 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_17_0 = UNIT_END + 0x108,          // 0x1B8 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_17_PROPERTIES = UNIT_END + 0x110, // 0x1C0 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_17_PAD = UNIT_END + 0x111,        // 0x1C1 - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_18_CREATOR = UNIT_END + 0x112,    // 0x1C2 - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_18_0 = UNIT_END + 0x114,          // 0x1C4 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_18_PROPERTIES = UNIT_END + 0x11C, // 0x1CC - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_18_PAD = UNIT_END + 0x11D,        // 0x1CD - Size: 1 - Type: INT
+    PLAYER_VISIBLE_ITEM_19_CREATOR = UNIT_END + 0x11E,    // 0x1CE - Size: 2 - Type: GUID
+    PLAYER_VISIBLE_ITEM_19_0 = UNIT_END + 0x120,          // 0x1D0 - Size: 8 - Type: INT
+    PLAYER_VISIBLE_ITEM_19_PROPERTIES = UNIT_END + 0x128, // 0x1D8 - Size: 1 - Type: TWO_SHORT
+    PLAYER_VISIBLE_ITEM_19_PAD = UNIT_END + 0x129,        // 0x1D9 - Size: 1 - Type: INT
+    PLAYER_FIELD_INV_SLOT_HEAD = UNIT_END + 0x12A,        // 0x1DA - Size: 46 - Type: GUID
+    PLAYER_FIELD_PACK_SLOT_1 = UNIT_END + 0x158,          // 0x208 - Size: 32 - Type: GUID
+    PLAYER_FIELD_BANK_SLOT_1 = UNIT_END + 0x178,          // 0x228 - Size: 48 - Type: GUID
+    PLAYER_FIELD_BANKBAG_SLOT_1 = UNIT_END + 0x1A8,       // 0x258 - Size: 12 - Type: GUID
+    PLAYER_FIELD_VENDORBUYBACK_SLOT_1 = UNIT_END + 0x1B4, // 0x264 - Size: 24 - Type: GUID
+    PLAYER_FIELD_KEYRING_SLOT_1 = UNIT_END + 0x1CC,       // 0x27C - Size: 64 - Type: GUID
+    PLAYER_FARSIGHT = UNIT_END + 0x20C,                   // 0x2BC - Size: 2 - Type: GUID
+    PLAYER_FIELD_COMBO_TARGET = UNIT_END + 0x20E,         // 0x2BE - Size: 2 - Type: GUID
+    PLAYER_XP = UNIT_END + 0x210,                         // 0x2C0 - Size: 1 - Type: INT
+    PLAYER_NEXT_LEVEL_XP = UNIT_END + 0x211,              // 0x2C1 - Size: 1 - Type: INT
+    PLAYER_SKILL_INFO_1_1 = UNIT_END + 0x212,             // 0x2C2 - Size: 384 - Type: TWO_SHORT
+    PLAYER_CHARACTER_POINTS1 = UNIT_END + 0x392,          // 0x442 - Size: 1 - Type: INT
+    PLAYER_CHARACTER_POINTS2 = UNIT_END + 0x393,          // 0x443 - Size: 1 - Type: INT
+    PLAYER_TRACK_CREATURES = UNIT_END + 0x394,            // 0x444 - Size: 1 - Type: INT
+    PLAYER_TRACK_RESOURCES = UNIT_END + 0x395,            // 0x445 - Size: 1 - Type: INT
+    PLAYER_BLOCK_PERCENTAGE = UNIT_END + 0x396,           // 0x446 - Size: 1 - Type: FLOAT
+    PLAYER_DODGE_PERCENTAGE = UNIT_END + 0x397,           // 0x447 - Size: 1 - Type: FLOAT
+    PLAYER_PARRY_PERCENTAGE = UNIT_END + 0x398,           // 0x448 - Size: 1 - Type: FLOAT
+    PLAYER_CRIT_PERCENTAGE = UNIT_END + 0x399,            // 0x449 - Size: 1 - Type: FLOAT
+    PLAYER_RANGED_CRIT_PERCENTAGE = UNIT_END + 0x39A,     // 0x44A - Size: 1 - Type: FLOAT
+    PLAYER_EXPLORED_ZONES_1 = UNIT_END + 0x39B,           // 0x44B - Size: 64 - Type: BYTES
+    PLAYER_REST_STATE_EXPERIENCE = UNIT_END + 0x3DB,      // 0x48B - Size: 1 - Type: INT
+    PLAYER_FIELD_COINAGE = UNIT_END + 0x3DC,              // 0x48C - Size: 1 - Type: INT
+    PLAYER_FIELD_POSSTAT0 = UNIT_END + 0x3DD,             // 0x48D - Size: 1 - Type: INT
+    PLAYER_FIELD_POSSTAT1 = UNIT_END + 0x3DE,             // 0x48E - Size: 1 - Type: INT
+    PLAYER_FIELD_POSSTAT2 = UNIT_END + 0x3DF,             // 0x48F - Size: 1 - Type: INT
+    PLAYER_FIELD_POSSTAT3 = UNIT_END + 0x3E0,             // 0x490 - Size: 1 - Type: INT
+    PLAYER_FIELD_POSSTAT4 = UNIT_END + 0x3E1,             // 0x491 - Size: 1 - Type: INT
+    PLAYER_FIELD_NEGSTAT0 = UNIT_END + 0x3E2,             // 0x492 - Size: 1 - Type: INT
+    PLAYER_FIELD_NEGSTAT1 = UNIT_END + 0x3E3,             // 0x493 - Size: 1 - Type: INT
+    PLAYER_FIELD_NEGSTAT2 = UNIT_END + 0x3E4,             // 0x494 - Size: 1 - Type: INT
+    PLAYER_FIELD_NEGSTAT3 = UNIT_END + 0x3E5,             // 0x495 - Size: 1 - Type: INT
+    PLAYER_FIELD_NEGSTAT4 = UNIT_END + 0x3E6,             // 0x496 - Size: 1 - Type: INT
+    PLAYER_FIELD_RESISTANCEBUFFMODSPOSITIVE = UNIT_END + 0x3E7, // 0x497 - Size: 7 - Type: INT
+    PLAYER_FIELD_RESISTANCEBUFFMODSNEGATIVE = UNIT_END + 0x3EE, // 0x49E - Size: 7 - Type: INT
+    PLAYER_FIELD_MOD_DAMAGE_DONE_POS = UNIT_END + 0x3F5,        // 0x4A5 - Size: 7 - Type: INT
+    PLAYER_FIELD_MOD_DAMAGE_DONE_NEG = UNIT_END + 0x3FC,        // 0x4AC - Size: 7 - Type: INT
+    PLAYER_FIELD_MOD_DAMAGE_DONE_PCT = UNIT_END + 0x403,        // 0x4B3 - Size: 7 - Type: INT
+    PLAYER_FIELD_BYTES = UNIT_END + 0x40A,                      // 0x4BA - Size: 1 - Type: BYTES
+    PLAYER_AMMO_ID = UNIT_END + 0x40B,                          // 0x4BB - Size: 1 - Type: INT
+    PLAYER_SELF_RES_SPELL = UNIT_END + 0x40C,                   // 0x4BC - Size: 1 - Type: INT
+    PLAYER_FIELD_PVP_MEDALS = UNIT_END + 0x40D,                 // 0x4BD - Size: 1 - Type: INT
+    PLAYER_FIELD_BUYBACK_PRICE_1 = UNIT_END + 0x40E,            // 0x4BE - Size: 12 - Type: INT
+    PLAYER_FIELD_BUYBACK_TIMESTAMP_1 = UNIT_END + 0x41A,        // 0x4CA - Size: 12 - Type: INT
+    PLAYER_FIELD_SESSION_KILLS = UNIT_END + 0x426,              // 0x4D6 - Size: 1 - Type: TWO_SHORT
+    PLAYER_FIELD_YESTERDAY_KILLS = UNIT_END + 0x427,            // 0x4D7 - Size: 1 - Type: TWO_SHORT
+    PLAYER_FIELD_LAST_WEEK_KILLS = UNIT_END + 0x428,            // 0x4D8 - Size: 1 - Type: TWO_SHORT
+    PLAYER_FIELD_THIS_WEEK_KILLS = UNIT_END + 0x429,            // 0x4D9 - Size: 1 - Type: TWO_SHORT
+    PLAYER_FIELD_THIS_WEEK_CONTRIBUTION = UNIT_END + 0x42A,     // 0x4DA - Size: 1 - Type: INT
+    PLAYER_FIELD_LIFETIME_HONORBALE_KILLS = UNIT_END + 0x42B,   // 0x4DB - Size: 1 - Type: INT
+    PLAYER_FIELD_LIFETIME_DISHONORBALE_KILLS = UNIT_END + 0x42C, // 0x4DC - Size: 1 - Type: INT
+    PLAYER_FIELD_YESTERDAY_CONTRIBUTION = UNIT_END + 0x42D,      // 0x4DD - Size: 1 - Type: INT
+    PLAYER_FIELD_LAST_WEEK_CONTRIBUTION = UNIT_END + 0x42E,      // 0x4DE - Size: 1 - Type: INT
+    PLAYER_FIELD_LAST_WEEK_RANK = UNIT_END + 0x42F,              // 0x4DF - Size: 1 - Type: INT
+    PLAYER_FIELD_BYTES2 = UNIT_END + 0x430,                      // 0x4E0 - Size: 1 - Type: BYTES
+    PLAYER_FIELD_WATCHED_FACTION_INDEX = UNIT_END + 0x431,       // 0x4E1 - Size: 1 - Type: INT
+    PLAYER_FIELD_COMBAT_RATING_1 = UNIT_END + 0x432,             // 0x4E2 - Size: 20 - Type: INT
+    PLAYER_END = UNIT_END + 0x446                                // 0x4F6
 };
 
 enum EGameObjectFields {
@@ -487,6 +487,76 @@ enum ECorpseFields {
     CORPSE_FIELD_DYNAMIC_FLAGS = OBJECT_END + 0x1E, // 0x024 - Size: 1 - Type: INT
     CORPSE_FIELD_PAD = OBJECT_END + 0x1F,           // 0x025 - Size: 1 - Type: INT
     CORPSE_END = OBJECT_END + 0x20                  // 0x026
+};
+
+enum Gender : uint8_t { GENDER_MALE = 0, GENDER_FEMALE = 1, GENDER_NONE = 2 };
+
+enum Races : uint8_t {
+    RACE_HUMAN = 1,
+    RACE_ORC = 2,
+    RACE_DWARF = 3,
+    RACE_NIGHTELF = 4,
+    RACE_UNDEAD = 5,
+    RACE_TAUREN = 6,
+    RACE_GNOME = 7,
+    RACE_TROLL = 8,
+    RACE_GOBLIN = 9,
+    RACE_HIGH_ELF = 10
+};
+
+enum RacialModel {
+    MODEL_HUMAN_MALE = 49,
+    MODEL_HUMAN_FEMALE = 50,
+    MODEL_ORC_MALE = 51,
+    MODEL_ORC_FEMALE = 52,
+    MODEL_DWARF_MALE = 53,
+    MODEL_DWARF_FEMALE = 54,
+    MODEL_NELF_MALE = 55,
+    MODEL_NELF_FEMALE = 56,
+    MODEL_UNDEAD_MALE = 57,
+    MODEL_UNDEAD_FEMALE = 58,
+    MODEL_TAUREN_MALE = 59,
+    MODEL_TAUREN_FEMALE = 60,
+    MODEL_TROLL_MALE = 1478,
+    MODEL_TROLL_FEMALE = 1479,
+    MODEL_GNOME_MALE = 1563,
+    MODEL_GNOME_FEMALE = 1564,
+    MODEL_GOBLIN_MALE = 6894,
+    MODEL_GOBLIN_FEMALE = 6895,
+    MODEL_HELF_FEMALE = 15475,
+    MODEL_HELF_MALE = 15476,
+};
+
+enum InventoryType {
+    INVTYPE_NON_EQUIP = 0,
+    INVTYPE_HEAD = 1,
+    INVTYPE_NECK = 2,
+    INVTYPE_SHOULDERS = 3,
+    INVTYPE_BODY = 4,
+    INVTYPE_CHEST = 5,
+    INVTYPE_WAIST = 6,
+    INVTYPE_LEGS = 7,
+    INVTYPE_FEET = 8,
+    INVTYPE_WRISTS = 9,
+    INVTYPE_HANDS = 10,
+    INVTYPE_FINGER = 11,
+    INVTYPE_TRINKET = 12,
+    INVTYPE_WEAPON = 13,
+    INVTYPE_SHIELD = 14,
+    INVTYPE_RANGED = 15,
+    INVTYPE_CLOAK = 16,
+    INVTYPE_2HWEAPON = 17,
+    INVTYPE_BAG = 18,
+    INVTYPE_TABARD = 19,
+    INVTYPE_ROBE = 20,
+    INVTYPE_WEAPONMAINHAND = 21,
+    INVTYPE_WEAPONOFFHAND = 22,
+    INVTYPE_HOLDABLE = 23,
+    INVTYPE_AMMO = 24,
+    INVTYPE_THROWN = 25,
+    INVTYPE_RANGEDRIGHT = 26,
+    INVTYPE_QUIVER = 27,
+    INVTYPE_RELIC = 28
 };
 
 struct C2Vector {
@@ -758,6 +828,18 @@ struct CGPlayerData {
     uint32_t m_combatRating[20];
 };
 
+struct CGPlayer_C {
+    CGObject_C_VfTable *vftable;
+    void *m_unk0;
+    CGPlayerData *m_data;
+    void *m_unk1[2];
+    uint32_t m_objectType;
+    void *m_unk2[6];
+    uint64_t m_guid; // 0x30
+    void *m_unk3[42];
+    CWorld *m_worldData; // 0xE0
+};
+
 struct CGGameObjectData {
     CGObject_Data m_objectData;
     uint64_t m_unk;
@@ -996,6 +1078,10 @@ using CGObject_C_SetBlock_t = int(__thiscall *)(Game::CGObject_C *thisptr, uint3
                                                 uint32_t value);
 using CGUnit_C_UpdateDisplayInfo_t = void(__thiscall *)(Game::CGUnit_C *thisptr);
 using CGUnit_C_Destructor_t = void(__thiscall *)(Game::CGUnit_C *thisptr);
+using CGPlayer_C_ApplyInvComponentToModel_t = void(__thiscall *)(Game::CGPlayer_C *thisptr,
+                                                                 void *invComp, int slotGroup);
+using ClearAppearanceSlot_t = void(__thiscall *)(void *thisptr, int slotGroup);
+using CGGameUI_Shutdown_t = void(__fastcall *)();
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;
@@ -1019,6 +1105,8 @@ extern const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount;
 extern const SFile_Open_t SFile_Open;
 extern const SFile_Read_t SFile_Read;
 extern const SFile_Close_t SFile_Close;
+extern const CGPlayer_C_ApplyInvComponentToModel_t CGPlayer_C_ApplyInvComponentToModel;
+extern const ClearAppearanceSlot_t ClearAppearanceSlot;
 extern const CGUnit_C_UpdateDisplayInfo_t CGUnit_C_UpdateDisplayInfo;
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);

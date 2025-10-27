@@ -27,6 +27,7 @@
 static Game::InitializeGlobal_t InitializeGlobal_o = nullptr;
 static Game::FrameScript_Initialize_t FrameScript_Initialize_o = nullptr;
 static Game::LoadScriptFunctions_t LoadScriptFunctions_o = nullptr;
+static Game::CGGameUI_Shutdown_t CGGameUI_Shutdown_o = nullptr;
 
 static void __fastcall InvalidFunctionPtrCheck_h() {}
 
@@ -43,7 +44,6 @@ static bool __fastcall FrameScript_Initialize_h() {
         "VANILLAHELPERS_VERSION=" + std::to_string(VANILLAHELPERS_VERSION_VALUE) +
         "\nVANILLA_HELPERS_VERSION=" + std::to_string(VANILLAHELPERS_VERSION_VALUE);
     Game::FrameScript_Execute(luaScript.c_str(), "VanillaHelpers.lua");
-    Blips::Initialize();
     return true;
 }
 
@@ -52,6 +52,12 @@ static void __fastcall LoadScriptFunctions_h() {
     FileIO::RegisterLuaFunctions();
     Blips::RegisterLuaFunctions();
     Morph::RegisterLuaFunctions();
+}
+
+static void __fastcall CGGameUI_Shutdown_h() {
+    Morph::Reset();
+    CGGameUI_Shutdown_o();
+    Blips::Reset();
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
@@ -75,6 +81,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
                       FrameScript_Initialize_o);
         HOOK_FUNCTION(Offsets::FUN_LOAD_SCRIPT_FUNCTIONS, LoadScriptFunctions_h,
                       LoadScriptFunctions_o);
+        HOOK_FUNCTION(Offsets::FUN_CGGAMEUI_SHUTDOWN, CGGameUI_Shutdown_h, CGGameUI_Shutdown_o);
 
         if (!Blips::InstallHooks())
             return FALSE;
