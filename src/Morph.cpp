@@ -476,8 +476,8 @@ static int __fastcall SetUnitFieldImpl(void *L, uint32_t fieldId, const char *us
         return 0;
     }
 
-    const char *name = Game::Lua::ToString(L, 1);
-    const uint64_t guid = Game::GetGUIDFromName(name);
+    const char *unitToken = Game::Lua::ToString(L, 1);
+    const uint64_t guid = Game::GetGUIDFromName(unitToken);
     if (guid == 0) {
         Game::Lua::Error(L, "Unit not found.");
         return 0;
@@ -551,7 +551,7 @@ static int __fastcall RemapFieldImpl(void *L, uint32_t fieldId, const char *usag
 
 static int __fastcall Script_SetUnitDisplayID(void *L) {
     return SetUnitFieldImpl(L, Game::UNIT_FIELD_DISPLAYID,
-                            "Usage: SetUnitDisplayID(unitName [, displayID])");
+                            "Usage: SetUnitDisplayID(unitToken [, displayID])");
 }
 
 static int __fastcall Script_RemapDisplayID(void *L) {
@@ -561,7 +561,7 @@ static int __fastcall Script_RemapDisplayID(void *L) {
 
 static int __fastcall Script_SetUnitMountDisplayID(void *L) {
     return SetUnitFieldImpl(L, Game::UNIT_FIELD_MOUNTDISPLAYID,
-                            "Usage: SetUnitMountDisplayID(unitName [, mountDisplayID])");
+                            "Usage: SetUnitMountDisplayID(unitToken [, mountDisplayID])");
 }
 
 static int __fastcall Script_RemapMountDisplayID(void *L) {
@@ -622,12 +622,12 @@ static int __fastcall Script_RemapMountDisplayID(void *L) {
 
 static int __fastcall Script_SetUnitVisibleItemID(void *L) {
     if (!Game::Lua::IsString(L, 1) || !Game::Lua::IsNumber(L, 2)) {
-        Game::Lua::Error(L, "Usage: SetUnitVisibleItemID(unitName, inventorySlot [, displayID])");
+        Game::Lua::Error(L, "Usage: SetUnitVisibleItemID(unitToken, inventorySlot [, displayID])");
         return 0;
     }
 
-    const char *name = Game::Lua::ToString(L, 1);
-    const uint64_t guid = Game::GetGUIDFromName(name);
+    const char *unitToken = Game::Lua::ToString(L, 1);
+    const uint64_t guid = Game::GetGUIDFromName(unitToken);
     if (guid == 0) {
         Game::Lua::Error(L, "Unit not found.");
         return 0;
@@ -719,12 +719,12 @@ static int __fastcall Script_RemapVisibleItemID(void *L) {
 
 static int __fastcall Script_UnitDisplayInfo(void *L) {
     if (!Game::Lua::IsString(L, 1)) {
-        Game::Lua::Error(L, "Usage: UnitDisplayInfo(unitName)");
+        Game::Lua::Error(L, "Usage: UnitDisplayInfo(unitToken)");
         return 0;
     }
 
-    const char *name = Game::Lua::ToString(L, 1);
-    const uint64_t guid = Game::GetGUIDFromName(name);
+    const char *unitToken = Game::Lua::ToString(L, 1);
+    const uint64_t guid = Game::GetGUIDFromName(unitToken);
     if (guid == 0) {
         Game::Lua::Error(L, "Unit not found.");
         return 0;
@@ -746,12 +746,12 @@ static int __fastcall Script_UnitDisplayInfo(void *L) {
 
 static int __fastcall Script_UnitVisibleItems(void *L) {
     if (!Game::Lua::IsString(L, 1)) {
-        Game::Lua::Error(L, "Usage: UnitVisibleItems(unitName)");
+        Game::Lua::Error(L, "Usage: UnitVisibleItems(unitToken)");
         return 0;
     }
 
-    const char *name = Game::Lua::ToString(L, 1);
-    const uint64_t guid = Game::GetGUIDFromName(name);
+    const char *unitToken = Game::Lua::ToString(L, 1);
+    const uint64_t guid = Game::GetGUIDFromName(unitToken);
     if (guid == 0) {
         Game::Lua::Error(L, "Unit not found.");
         return 0;
