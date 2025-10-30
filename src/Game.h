@@ -1078,9 +1078,6 @@ using CGObject_C_SetBlock_t = int(__thiscall *)(Game::CGObject_C *thisptr, uint3
                                                 uint32_t value);
 using CGUnit_C_UpdateDisplayInfo_t = void(__thiscall *)(Game::CGUnit_C *thisptr);
 using CGUnit_C_Destructor_t = void(__thiscall *)(Game::CGUnit_C *thisptr);
-using CGPlayer_C_ApplyInvComponentToModel_t = void(__thiscall *)(Game::CGPlayer_C *thisptr,
-                                                                 void *invComp, int slotGroup);
-using ClearAppearanceSlot_t = void(__thiscall *)(void *thisptr, int slotGroup);
 using CGGameUI_Shutdown_t = void(__fastcall *)();
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
@@ -1105,8 +1102,6 @@ extern const CGUnit_C_RefreshMount_t CGUnit_C_RefreshMount;
 extern const SFile_Open_t SFile_Open;
 extern const SFile_Read_t SFile_Read;
 extern const SFile_Close_t SFile_Close;
-extern const CGPlayer_C_ApplyInvComponentToModel_t CGPlayer_C_ApplyInvComponentToModel;
-extern const ClearAppearanceSlot_t ClearAppearanceSlot;
 extern const CGUnit_C_UpdateDisplayInfo_t CGUnit_C_UpdateDisplayInfo;
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);

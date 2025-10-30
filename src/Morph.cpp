@@ -311,6 +311,14 @@ static inline void OnFieldChanging(Game::CGPlayer_C *unit, uint32_t fieldIndex, 
     }
 }
 
+static void ReloadUnitDisplay(Game::CGPlayer_C *unit) {
+    uint32_t original = unit->m_data->m_unitData.m_displayId;
+    unit->m_data->m_unitData.m_displayId = 15435;
+    Game::CGUnit_C_UpdateDisplayInfo(reinterpret_cast<Game::CGUnit_C *>(unit));
+    unit->m_data->m_unitData.m_displayId = original;
+    Game::CGUnit_C_UpdateDisplayInfo(reinterpret_cast<Game::CGUnit_C *>(unit));
+}
+
 static inline void OnFieldChanged(Game::CGPlayer_C *unit, uint32_t fieldIndex) {
     switch (fieldIndex) {
     case Game::UNIT_FIELD_DISPLAYID:
@@ -338,15 +346,9 @@ static inline void OnFieldChanged(Game::CGPlayer_C *unit, uint32_t fieldIndex) {
     case Game::PLAYER_VISIBLE_ITEM_17_0:
     case Game::PLAYER_VISIBLE_ITEM_18_0:
     case Game::PLAYER_VISIBLE_ITEM_19_0:
-        // TODO: Weapons (ITEM_16, ITEM_17 and ITEM_18) need special treatments, it seems to luckily
-        // work correctly on the equip path, but it doesn't while unequipping.
-        uint8_t index = (fieldIndex - Game::PLAYER_VISIBLE_ITEM_1_0) / VISIBLE_ITEM_STRIDE;
-        if (unit->m_data->m_visibleItems[index].data[0] > 0) {
-            Game::CGPlayer_C_ApplyInvComponentToModel(unit, &unit->m_data->m_visibleItems[index],
-                                                      index);
-        } else {
-            Game::ClearAppearanceSlot(*(void **)((char *)unit + 0xD30), index);
-        }
+        // The proper way would be to call CGPlayer_C::UpdateInventoryComponent at 0x5dee30 or at
+        // least replicate it.
+        ReloadUnitDisplay(unit);
         break;
     }
 }
