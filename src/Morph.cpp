@@ -410,7 +410,7 @@ static int __fastcall CGObject_C_SetBlock_h(Game::CGObject_C *thisptr, void * /*
     auto *unit = reinterpret_cast<Game::CGPlayer_C *>(thisptr);
 
     if (fieldIndex == Game::UNIT_FIELD_NATIVEDISPLAYID && UsingNativeDisplay(unit)) {
-        unit->m_data->m_unitData.m_displayId = unit->m_data->m_unitData.m_nativeDisplayId;
+        unit->m_data->m_unitData.m_displayId = value;
     }
 
     if (GetFieldSlot(unit, fieldIndex) != nullptr) {
