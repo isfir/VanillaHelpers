@@ -41,8 +41,6 @@ static constexpr uint32_t VISIBLE_ITEM_STRIDE = 0xC;
 static void ApplyField(Game::CGPlayer_C *unit, uint32_t fieldIndex);
 
 static inline uint32_t *GetFieldSlot(Game::CGPlayer_C *unit, uint32_t fieldIndex) {
-    if (!unit || !unit->m_data)
-        return nullptr;
     switch (fieldIndex) {
     case Game::UNIT_FIELD_DISPLAYID:
         return &unit->m_data->m_unitData.m_displayId;
@@ -734,7 +732,7 @@ static int __fastcall Script_UnitDisplayInfo(void *L) {
 
     auto *unit = reinterpret_cast<Game::CGUnit_C *>(
         Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_UNIT, nullptr, guid, 0));
-    if (!unit || !unit->m_data) {
+    if (unit == nullptr) {
         Game::Lua::Error(L, "Unit not found.");
         return 0;
     }
@@ -744,6 +742,32 @@ static int __fastcall Script_UnitDisplayInfo(void *L) {
     Game::Lua::PushNumber(L, unit->m_data->m_mountDisplayId);
 
     return 3;
+}
+
+static int __fastcall Script_UnitVisibleItems(void *L) {
+    if (!Game::Lua::IsString(L, 1)) {
+        Game::Lua::Error(L, "Usage: UnitVisibleItems(unitName)");
+        return 0;
+    }
+
+    const char *name = Game::Lua::ToString(L, 1);
+    const uint64_t guid = Game::GetGUIDFromName(name);
+    if (guid == 0) {
+        Game::Lua::Error(L, "Unit not found.");
+        return 0;
+    }
+
+    auto *unit = reinterpret_cast<Game::CGPlayer_C *>(
+        Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_PLAYER, nullptr, guid, 0));
+    if (unit == nullptr) {
+        Game::Lua::Error(L, "Unit not found.");
+        return 0;
+    }
+
+    for (auto &visibleItem : unit->m_data->m_visibleItems) {
+        Game::Lua::PushNumber(L, visibleItem.data[0]);
+    }
+    return 19;
 }
 
 bool InstallHooks() {
@@ -767,6 +791,8 @@ void RegisterLuaFunctions() {
                                        reinterpret_cast<uintptr_t>(&Script_RemapVisibleItemID));
     Game::FrameScript_RegisterFunction("UnitDisplayInfo",
                                        reinterpret_cast<uintptr_t>(&Script_UnitDisplayInfo));
+    Game::FrameScript_RegisterFunction("UnitVisibleItems",
+                                       reinterpret_cast<uintptr_t>(&Script_UnitVisibleItems));
 }
 
 void Reset() {
