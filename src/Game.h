@@ -904,6 +904,69 @@ struct MINIMAPINFO {
     CGMinimapFrame *minimapFrame;
 };
 
+struct ItemStats_C {
+    uint32_t m_class;
+    uint32_t m_subClass;
+    char *m_name[4];
+    uint32_t m_displayInfoID;
+    uint32_t m_quality;
+    uint32_t m_flags;
+    uint32_t m_buyPrice;
+    uint32_t m_sellPrice;
+    uint32_t m_inventoryType;
+    uint32_t m_allowableClass;
+    uint32_t m_allowableRace;
+    uint32_t m_itemLevel;
+    uint32_t m_requiredLevel;
+    uint32_t m_requiredSkill;
+    uint32_t m_requiredSkillRank;
+    uint32_t m_requiredSpell;
+    uint32_t m_requiredHonorRank;
+    uint32_t m_requiredCityRank;
+    uint32_t m_requiredReputationFaction;
+    uint32_t m_requiredReputationRank;
+    int32_t m_maxCount;
+    int32_t m_stackable;
+    uint32_t m_containerSlots;
+    uint32_t m_statType[10];
+    int32_t m_statValue[10];
+    float m_damageMin[5];
+    float m_damageMax[5];
+    uint32_t m_damageType[5];
+    uint32_t m_armor;
+    uint32_t m_holyRes;
+    uint32_t m_fireRes;
+    uint32_t m_natureRes;
+    uint32_t m_frostRes;
+    uint32_t m_shadowRes;
+    uint32_t m_arcaneRes;
+    uint32_t m_delay;
+    uint32_t m_ammoType;
+    float m_rangedModRange;
+    uint32_t m_spellId[5];
+    uint32_t m_spellTrigger[5];
+    int32_t m_spellCharges[5];
+    uint32_t m_spellCooldown[5];
+    uint32_t m_spellCategory[5];
+    uint32_t m_spellCategoryCooldown[5];
+    uint32_t m_bonding;
+    char *m_description;
+    uint32_t m_pageText;
+    uint32_t m_languageID;
+    uint32_t m_pageMaterial;
+    uint32_t m_startQuest;
+    uint32_t m_lockID;
+    int32_t m_material;
+    uint32_t m_sheath;
+    int32_t m_randomProperty;
+    uint32_t m_block;
+    uint32_t m_itemSet;
+    uint32_t m_maxDurability;
+    uint32_t m_area;
+    uint32_t m_map;
+    uint32_t m_bagFamily;
+};
+
 struct STATUSENTRY {
     const char *text;
     STATUS_TYPE severity;
@@ -1047,6 +1110,9 @@ using CGObject_C_SetBlock_t = int(__thiscall *)(Game::CGObject_C *thisptr, uint3
 using CGUnit_C_UpdateDisplayInfo_t = void(__thiscall *)(Game::CGUnit_C *thisptr);
 using CGUnit_C_Destructor_t = void(__thiscall *)(Game::CGUnit_C *thisptr);
 using CGGameUI_Shutdown_t = void(__fastcall *)();
+using DBCache_ItemStats_C_GetRecord_t =
+    Game::ItemStats_C *(__thiscall *)(void *dbCache, uint32_t itemID, const uint64_t *guid,
+                                      void *callback, void *userData, bool requestIfMissing);
 
 extern const FrameScript_RegisterFunction_t FrameScript_RegisterFunction;
 extern const GetGUIDFromName_t GetGUIDFromName;
@@ -1071,6 +1137,7 @@ extern const SFile_Open_t SFile_Open;
 extern const SFile_Read_t SFile_Read;
 extern const SFile_Close_t SFile_Close;
 extern const CGUnit_C_UpdateDisplayInfo_t CGUnit_C_UpdateDisplayInfo;
+extern const DBCache_ItemStats_C_GetRecord_t DBCache_ItemStats_C_GetRecord;
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray);
 
@@ -1090,5 +1157,6 @@ extern C3Vector &normal;
 extern unsigned short *vertIndices;
 extern const float &BLIP_HALF;
 extern const WowClientDB<FactionTemplate> &g_factionTemplateDB;
+extern void **g_itemDBCache;
 
 } // namespace Game

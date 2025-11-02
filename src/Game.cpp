@@ -73,6 +73,8 @@ const SFile_Read_t SFile_Read = reinterpret_cast<SFile_Read_t>(Offsets::FUN_SFIL
 const SFile_Close_t SFile_Close = reinterpret_cast<SFile_Close_t>(Offsets::FUN_SFILE_CLOSE);
 const CGUnit_C_UpdateDisplayInfo_t CGUnit_C_UpdateDisplayInfo =
     reinterpret_cast<CGUnit_C_UpdateDisplayInfo_t>(Offsets::FUN_CGUNIT_C_UPDATE_DISPLAY_INFO);
+const DBCache_ItemStats_C_GetRecord_t DBCache_ItemStats_C_GetRecord =
+    reinterpret_cast<DBCache_ItemStats_C_GetRecord_t>(FUN_DBCACHE_ITEM_STATS_C_GET_RECORD);
 
 CStatus::CStatus()
     : vftable(reinterpret_cast<void *>(Offsets::VFTABLE_CSTATUS)), m_unk(8),
@@ -98,6 +100,7 @@ unsigned short *vertIndices = reinterpret_cast<unsigned short *>(Offsets::CONST_
 const float &BLIP_HALF = *reinterpret_cast<float *>(Offsets::CONST_BLIP_HALF);
 const WowClientDB<FactionTemplate> &g_factionTemplateDB =
     *reinterpret_cast<const WowClientDB<FactionTemplate> *>(Offsets::CONST_FACTION_TEMPLATE_DB);
+void **g_itemDBCache = reinterpret_cast<void **>(VAR_ITEMDB_CACHE);
 
 void DrawMinimapTexture(HTEXTURE__ *texture, C2Vector minimapPosition, float scale, bool gray) {
     CImVector color = {0xFF, 0xFF, 0xFF, 0xFF}; // White

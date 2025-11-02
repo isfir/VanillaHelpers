@@ -744,6 +744,25 @@ static int __fastcall Script_UnitDisplayInfo(void *L) {
     return 3;
 }
 
+static int __fastcall Script_GetItemDisplayID(void *L) {
+    if (!Game::Lua::IsNumber(L, 1)) {
+        Game::Lua::Error(L, "Usage: GetItemDisplayID(itemID)");
+        return 0;
+    }
+
+    Game::ItemStats_C *item = Game::DBCache_ItemStats_C_GetRecord(
+        Game::g_itemDBCache, static_cast<uint32_t>(Game::Lua::ToNumber(L, 1)), nullptr, nullptr,
+        nullptr, false);
+    if (item == nullptr) {
+        Game::Lua::Error(L, "Item not found in DBCache.");
+        return 0;
+    }
+
+    Game::Lua::PushNumber(L, item->m_displayInfoID);
+
+    return 1;
+}
+
 bool InstallHooks() {
     HOOK_FUNCTION(Offsets::FUN_CGOBJECT_C_SET_BLOCK, CGObject_C_SetBlock_h, CGObject_C_SetBlock_o);
     HOOK_FUNCTION(Offsets::FUN_CGUNIT_C_DESTRUCTOR, CGUnit_C_Destructor_h, CGUnit_C_Destructor_o);
@@ -765,6 +784,8 @@ void RegisterLuaFunctions() {
                                        reinterpret_cast<uintptr_t>(&Script_RemapVisibleItemID));
     Game::FrameScript_RegisterFunction("UnitDisplayInfo",
                                        reinterpret_cast<uintptr_t>(&Script_UnitDisplayInfo));
+    Game::FrameScript_RegisterFunction("GetItemDisplayID",
+                                       reinterpret_cast<uintptr_t>(&Script_GetItemDisplayID));
 }
 
 void Reset() {
