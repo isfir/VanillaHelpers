@@ -26,7 +26,6 @@ RemapMountDisplayID(oldDisplayID(s) [, factionIndexedDisplayIDs])
 SetUnitVisibleItemID(unitToken, inventorySlot [, displayID])
 RemapVisibleItemID(oldDisplayID(s), inventorySlot [, newDisplayID])
 displayID, nativeDisplayID, mountDisplayID = UnitDisplayInfo(unitToken)
-headItemID, neckItemID, shouldersItemID, shirtItemID, chestItemID, waistItemID, legsItemID, feetItemID, wristItemID, handsItemID, finger1ItemID, finger2ItemID, trinket1ItemID, trinket2ItemID, backItemID, mainandItemID, offhandItemID, rangedItemID, tabardItemID = UnitVisibleItems(unitToken)
 ```
 
 To enable higher-resolution character skins, add a text file at VanillaHelpers/ResizeCharacterSkin.txt inside your MPQ. The file should contain a single number: 2 or 4 (the scale multiplier).

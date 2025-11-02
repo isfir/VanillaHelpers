@@ -344,7 +344,7 @@ static inline void OnFieldChanged(Game::CGPlayer_C *unit, uint32_t fieldIndex) {
     case Game::PLAYER_VISIBLE_ITEM_17_0:
     case Game::PLAYER_VISIBLE_ITEM_18_0:
     case Game::PLAYER_VISIBLE_ITEM_19_0:
-        // The proper way would be to call CGPlayer_C::UpdateInventoryComponent at 0x5dee30 or at
+        // The proper way would be to call CGPlayer_C::UpdateInventoryComponent at 0x5DEE30 or at
         // least replicate it.
         ReloadUnitDisplay(unit);
         break;
@@ -744,32 +744,6 @@ static int __fastcall Script_UnitDisplayInfo(void *L) {
     return 3;
 }
 
-static int __fastcall Script_UnitVisibleItems(void *L) {
-    if (!Game::Lua::IsString(L, 1)) {
-        Game::Lua::Error(L, "Usage: UnitVisibleItems(unitToken)");
-        return 0;
-    }
-
-    const char *unitToken = Game::Lua::ToString(L, 1);
-    const uint64_t guid = Game::GetGUIDFromName(unitToken);
-    if (guid == 0) {
-        Game::Lua::Error(L, "Unit not found.");
-        return 0;
-    }
-
-    auto *unit = reinterpret_cast<Game::CGPlayer_C *>(
-        Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_PLAYER, nullptr, guid, 0));
-    if (unit == nullptr) {
-        Game::Lua::Error(L, "Unit not found.");
-        return 0;
-    }
-
-    for (auto &visibleItem : unit->m_data->m_visibleItems) {
-        Game::Lua::PushNumber(L, visibleItem.data[0]);
-    }
-    return 19;
-}
-
 bool InstallHooks() {
     HOOK_FUNCTION(Offsets::FUN_CGOBJECT_C_SET_BLOCK, CGObject_C_SetBlock_h, CGObject_C_SetBlock_o);
     HOOK_FUNCTION(Offsets::FUN_CGUNIT_C_DESTRUCTOR, CGUnit_C_Destructor_h, CGUnit_C_Destructor_o);
@@ -791,8 +765,6 @@ void RegisterLuaFunctions() {
                                        reinterpret_cast<uintptr_t>(&Script_RemapVisibleItemID));
     Game::FrameScript_RegisterFunction("UnitDisplayInfo",
                                        reinterpret_cast<uintptr_t>(&Script_UnitDisplayInfo));
-    Game::FrameScript_RegisterFunction("UnitVisibleItems",
-                                       reinterpret_cast<uintptr_t>(&Script_UnitVisibleItems));
 }
 
 void Reset() {
