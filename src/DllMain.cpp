@@ -81,13 +81,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
                       LoadScriptFunctions_o);
         HOOK_FUNCTION(Offsets::FUN_CGGAMEUI_SHUTDOWN, CGGameUI_Shutdown_h, CGGameUI_Shutdown_o);
 
-        if (!Blips::InstallHooks())
-            return FALSE;
-
         if (!Texture::InstallHooks())
-            return FALSE;
-
-        if (!Morph::InstallHooks())
             return FALSE;
     } else if (reason == DLL_PROCESS_DETACH) {
         MH_Uninitialize();

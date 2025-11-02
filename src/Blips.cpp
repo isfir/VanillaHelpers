@@ -58,6 +58,7 @@ struct BlipHoverState {
     std::vector<BlipHoverEntry> hits;
 };
 
+static bool g_hooksInstalled = false;
 static std::unordered_map<std::string, Game::HTEXTURE__ *> g_textureCache;
 static std::unordered_map<uint64_t, Blip> g_trackedUnitBlips;
 static std::unordered_map<uint32_t, Blip> g_trackedUnitFlagsBlips;
@@ -233,8 +234,9 @@ static void WriteToMinimapTooltip(char *tooltipText) {
     }
 }
 
-static int __fastcall ClntObjMgrEnumVisibleObjects_h(
-    Game::ClntObjMgrEnumVisibleObjectsCallback_t callback, void *context) {
+static int __fastcall
+ClntObjMgrEnumVisibleObjects_h(Game::ClntObjMgrEnumVisibleObjectsCallback_t callback,
+                               void *context) {
     if (reinterpret_cast<uintptr_t>(callback) == Offsets::FUN_OBJECT_ENUM_PROC) {
         g_trackedObjectsData.clear();
     }
@@ -326,6 +328,48 @@ static void __declspec(naked) OnLayerTrackUpdate_AppendToTooltipBuffer_h() {
     }
 }
 
+static bool InstallHooks() {
+    if (g_hooksInstalled)
+        return TRUE;
+
+    HOOK_FUNCTION(Offsets::FUN_CLNT_OBJ_MGR_ENUM_VISIBLE_OBJECTS, ClntObjMgrEnumVisibleObjects_h,
+                  ClntObjMgrEnumVisibleObjects_o);
+    HOOK_FUNCTION(Offsets::FUN_OBJECT_ENUM_PROC, ObjectEnumProc_h, ObjectEnumProc_o);
+    HOOK_FUNCTION(Offsets::FUN_RENDER_OBJECT_BLIP, RenderObjectBlips_h, RenderObjectBlips_o);
+    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_RENDER_PARTY_LISTING, MinimapRender_PartyListing_h,
+                  MinimapRender_PartyListing_o);
+    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_CHANGED_GATE,
+                  OnLayerTrackUpdate_ChangedGate_h, OnLayerTrackUpdate_ChangedGate_o);
+    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_PRE_SHOW_GATE,
+                  OnLayerTrackUpdate_PreShowGate_h, OnLayerTrackUpdate_PreShowGate_o);
+    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_APPEND_TO_TOOLTIP_BUFFER,
+                  OnLayerTrackUpdate_AppendToTooltipBuffer_h,
+                  OnLayerTrackUpdate_AppendToTooltipBuffer_o);
+
+    g_hooksInstalled = true;
+    return TRUE;
+}
+
+static bool UninstallHooks() {
+    if (!g_hooksInstalled)
+        return TRUE;
+
+    UNHOOK_FUNCTION(Offsets::FUN_CLNT_OBJ_MGR_ENUM_VISIBLE_OBJECTS, ClntObjMgrEnumVisibleObjects_o);
+    UNHOOK_FUNCTION(Offsets::FUN_OBJECT_ENUM_PROC, ObjectEnumProc_o);
+    UNHOOK_FUNCTION(Offsets::FUN_RENDER_OBJECT_BLIP, RenderObjectBlips_o);
+    UNHOOK_FUNCTION(Offsets::PATCH_MINIMAP_RENDER_PARTY_LISTING, MinimapRender_PartyListing_o);
+    UNHOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_CHANGED_GATE,
+                    OnLayerTrackUpdate_ChangedGate_o);
+    UNHOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_PRE_SHOW_GATE,
+                    OnLayerTrackUpdate_PreShowGate_o);
+    UNHOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_APPEND_TO_TOOLTIP_BUFFER,
+
+                    OnLayerTrackUpdate_AppendToTooltipBuffer_o);
+
+    g_hooksInstalled = false;
+    return TRUE;
+}
+
 static Game::HTEXTURE__ *LoadTextureCached(const std::string &texturePathLower) {
     if (const auto it = g_textureCache.find(texturePathLower); it != g_textureCache.end()) {
         return it->second;
@@ -385,6 +429,7 @@ static int __fastcall Script_SetUnitBlip(void *L) {
         return 0;
     }
 
+    InstallHooks();
     float scale = 1.0F;
 
     if (Game::Lua::IsNumber(L, 3)) {
@@ -442,12 +487,14 @@ static int __fastcall Script_SetObjectTypeBlip(void *L) {
 
     const auto itFlag = g_stringToFlag.find(typeName);
     if (itFlag != g_stringToFlag.end()) {
+        InstallHooks();
         g_trackedUnitFlagsBlips[itFlag->second] = blip;
         return 0;
     }
 
     const auto itType = g_stringToGameObjectType.find(typeName);
     if (itType != g_stringToGameObjectType.end()) {
+        InstallHooks();
         g_trackedGameObjectTypesBlips[itType->second] = blip;
         return 0;
     }
@@ -456,23 +503,6 @@ static int __fastcall Script_SetObjectTypeBlip(void *L) {
                         "Flight Master, Innkeeper, Mailbox, Repair, Summoning Ritual Object, "
                         "Summoning Ritual Unit, Trainer, Vendor.");
     return 0;
-}
-
-bool InstallHooks() {
-    HOOK_FUNCTION(Offsets::FUN_CLNT_OBJ_MGR_ENUM_VISIBLE_OBJECTS, ClntObjMgrEnumVisibleObjects_h,
-                  ClntObjMgrEnumVisibleObjects_o);
-    HOOK_FUNCTION(Offsets::FUN_OBJECT_ENUM_PROC, ObjectEnumProc_h, ObjectEnumProc_o);
-    HOOK_FUNCTION(Offsets::FUN_RENDER_OBJECT_BLIP, RenderObjectBlips_h, RenderObjectBlips_o);
-    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_RENDER_PARTY_LISTING, MinimapRender_PartyListing_h,
-                  MinimapRender_PartyListing_o);
-    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_CHANGED_GATE,
-                  OnLayerTrackUpdate_ChangedGate_h, OnLayerTrackUpdate_ChangedGate_o);
-    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_PRE_SHOW_GATE,
-                  OnLayerTrackUpdate_PreShowGate_h, OnLayerTrackUpdate_PreShowGate_o);
-    HOOK_FUNCTION(Offsets::PATCH_MINIMAP_TRACK_UPDATE_APPEND_TO_TOOLTIP_BUFFER,
-                  OnLayerTrackUpdate_AppendToTooltipBuffer_h,
-                  OnLayerTrackUpdate_AppendToTooltipBuffer_o);
-    return TRUE;
 }
 
 void RegisterLuaFunctions() {
@@ -488,6 +518,7 @@ void Reset() {
     g_trackedGameObjectTypesBlips.clear();
     g_trackedObjectsData.clear();
     g_blipHoverState = BlipHoverState();
+    UninstallHooks();
 }
 
 } // namespace Blips

@@ -26,6 +26,7 @@ namespace Morph {
 using factionValuesMap_t = std::unordered_map<uint32_t, std::vector<uint32_t>>;
 using morphValue_t = std::variant<uint32_t, std::shared_ptr<factionValuesMap_t>>;
 
+static bool g_hooksInstalled = false;
 static std::unordered_map<uint64_t, std::unordered_map<uint32_t, morphValue_t>>
     g_overrides; // guid -> field -> newValue
 static std::unordered_map<uint32_t, std::unordered_map<uint32_t, morphValue_t>>
@@ -429,6 +430,28 @@ static void __fastcall CGUnit_C_Destructor_h(Game::CGUnit_C *thisptr) {
     CGUnit_C_Destructor_o(thisptr);
 }
 
+static bool InstallHooks() {
+    if (g_hooksInstalled)
+        return TRUE;
+
+    HOOK_FUNCTION(Offsets::FUN_CGOBJECT_C_SET_BLOCK, CGObject_C_SetBlock_h, CGObject_C_SetBlock_o);
+    HOOK_FUNCTION(Offsets::FUN_CGUNIT_C_DESTRUCTOR, CGUnit_C_Destructor_h, CGUnit_C_Destructor_o);
+
+    g_hooksInstalled = true;
+    return TRUE;
+}
+
+static bool UninstallHooks() {
+    if (!g_hooksInstalled)
+        return TRUE;
+
+    UNHOOK_FUNCTION(Offsets::FUN_CGOBJECT_C_SET_BLOCK, CGObject_C_SetBlock_o);
+    UNHOOK_FUNCTION(Offsets::FUN_CGUNIT_C_DESTRUCTOR, CGUnit_C_Destructor_o);
+
+    g_hooksInstalled = false;
+    return TRUE;
+}
+
 static bool __fastcall RefreshFieldCallback(void *context, void * /*edx*/, uint64_t guid) {
     auto *unit = reinterpret_cast<Game::CGPlayer_C *>(
         Game::ClntObjMgrObjectPtr(Game::TYPE_MASK::TYPEMASK_PLAYER, nullptr, guid, 0));
@@ -504,6 +527,7 @@ static int __fastcall SetUnitFieldImpl(void *L, uint32_t fieldId, const char *us
         return 0;
     }
 
+    InstallHooks();
     const auto value = static_cast<uint32_t>(Game::Lua::ToNumber(L, 2));
     g_overrides[guid][fieldId] = value;
     ApplyField(unit, fieldId);
@@ -548,6 +572,7 @@ static int __fastcall RemapFieldImpl(void *L, uint32_t fieldId, const char *usag
         return 0;
     }
 
+    InstallHooks();
     const auto newId = static_cast<uint32_t>(Game::Lua::ToNumber(L, 2));
     for (auto oldId : oldIds) {
         g_remap[fieldId][oldId] = newId;
@@ -619,6 +644,7 @@ static int __fastcall Script_RemapMountDisplayID(void *L) {
         return 0;
     }
 
+    InstallHooks();
     for (auto oldId : oldIds) {
         g_remap[Game::UNIT_FIELD_MOUNTDISPLAYID][oldId] = factionMap;
     }
@@ -669,6 +695,7 @@ static int __fastcall Script_SetUnitVisibleItemID(void *L) {
         return 0;
     }
 
+    InstallHooks();
     const auto value = static_cast<uint32_t>(Game::Lua::ToNumber(L, 3));
     g_overrides[guid][fieldId] = value;
     ApplyField(unit, fieldId);
@@ -777,12 +804,6 @@ static int __fastcall Script_GetItemDisplayID(void *L) {
     return 1;
 }
 
-bool InstallHooks() {
-    HOOK_FUNCTION(Offsets::FUN_CGOBJECT_C_SET_BLOCK, CGObject_C_SetBlock_h, CGObject_C_SetBlock_o);
-    HOOK_FUNCTION(Offsets::FUN_CGUNIT_C_DESTRUCTOR, CGUnit_C_Destructor_h, CGUnit_C_Destructor_o);
-    return TRUE;
-}
-
 void RegisterLuaFunctions() {
     Game::FrameScript_RegisterFunction("SetUnitDisplayID",
                                        reinterpret_cast<uintptr_t>(&Script_SetUnitDisplayID));
@@ -808,6 +829,8 @@ void Reset() {
     if (Game::ClntObjMgrGetActivePlayer() > 0) {
         Game::ClntObjMgrEnumVisibleObjects(RefreshFieldCallback, nullptr);
     }
+    g_original.clear();
+    UninstallHooks();
 }
 
 } // namespace Morph
