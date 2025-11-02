@@ -19,6 +19,14 @@ WriteFile(filename, mode, content)
 content = ReadFile(filename)
 SetUnitBlip(unit [, texture [, scale]])
 SetObjectTypeBlip(type [, texture [, scale]])
+SetUnitDisplayID(unitToken [, displayID])
+RemapDisplayID(oldDisplayID(s) [, newDisplayID])
+SetUnitMountDisplayID(unitToken [, mountDisplayID])
+RemapMountDisplayID(oldDisplayID(s) [, factionIndexedDisplayIDs])
+SetUnitVisibleItemID(unitToken, inventorySlot [, displayID])
+RemapVisibleItemID(oldDisplayID(s), inventorySlot [, newDisplayID])
+displayID, nativeDisplayID, mountDisplayID = UnitDisplayInfo(unitToken)
+itemDisplayID = GetItemDisplayID(itemID)
 ```
 
 To enable higher-resolution character skins, add a text file at VanillaHelpers/ResizeCharacterSkin.txt inside your MPQ. The file should contain a single number: 2 or 4 (the scale multiplier).

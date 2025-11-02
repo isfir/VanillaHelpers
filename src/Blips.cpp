@@ -348,8 +348,8 @@ static int __fastcall Script_SetUnitBlip(void *L) {
         return 0;
     }
 
-    const auto *unitName = Game::Lua::ToString(L, 1);
-    const uint64_t unitGUID = Game::GetGUIDFromName(unitName);
+    const auto *unitToken = Game::Lua::ToString(L, 1);
+    const uint64_t unitGUID = Game::GetGUIDFromName(unitToken);
 
     if (unitGUID == 0) {
         Game::Lua::Error(L, "Unit not found.");
@@ -482,7 +482,7 @@ void RegisterLuaFunctions() {
                                        reinterpret_cast<uintptr_t>(&Script_SetObjectTypeBlip));
 }
 
-void Initialize() {
+void Reset() {
     g_trackedUnitBlips.clear();
     g_trackedUnitFlagsBlips.clear();
     g_trackedGameObjectTypesBlips.clear();

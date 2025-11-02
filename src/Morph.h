@@ -11,10 +11,10 @@
 // You should have received a copy of the GNU Lessed General Public License along with
 // VanillaHelpers. If not, see <https://www.gnu.org/licenses/>.
 
-namespace Blips {
+namespace Morph {
 
 bool InstallHooks();
 void RegisterLuaFunctions();
 void Reset();
 
-} // namespace Blips
+} // namespace Morph
