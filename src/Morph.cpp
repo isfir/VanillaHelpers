@@ -491,6 +491,13 @@ static int __fastcall SetUnitFieldImpl(void *L, uint32_t fieldId, const char *us
         return 0;
     }
 
+    auto *player = reinterpret_cast<Game::CGUnit_C *>(Game::ClntObjMgrObjectPtr(
+        Game::TYPE_MASK::TYPEMASK_PLAYER, nullptr, Game::ClntObjMgrGetActivePlayer(), 0));
+    if (!Game::CGUnit_C_CanAssist(player, reinterpret_cast<Game::CGUnit_C *>(unit))) {
+        Game::Lua::Error(L, "Unit is not friendly.");
+        return 0;
+    }
+
     if (!Game::Lua::IsNumber(L, 2)) {
         EraseNested(g_overrides, guid, fieldId);
         ApplyField(unit, fieldId);
@@ -638,6 +645,13 @@ static int __fastcall Script_SetUnitVisibleItemID(void *L) {
 
     if (unit == nullptr) {
         Game::Lua::Error(L, "Unit not found.");
+        return 0;
+    }
+
+    auto *player = reinterpret_cast<Game::CGUnit_C *>(Game::ClntObjMgrObjectPtr(
+        Game::TYPE_MASK::TYPEMASK_PLAYER, nullptr, Game::ClntObjMgrGetActivePlayer(), 0));
+    if (!Game::CGUnit_C_CanAssist(player, reinterpret_cast<Game::CGUnit_C *>(unit))) {
+        Game::Lua::Error(L, "Unit is not friendly.");
         return 0;
     }
 
