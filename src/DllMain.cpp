@@ -18,7 +18,6 @@
 #include "Game.h"
 #include "MinHook.h"
 #include "Morph.h"
-#include "MtxFilter.h"
 #include "Offsets.h"
 #include "Texture.h"
 
@@ -33,7 +32,6 @@ static void __fastcall InvalidFunctionPtrCheck_h() {}
 
 static bool __fastcall InitializeGlobal_h() {
     bool ok = InitializeGlobal_o();
-    MtxFilter::Initialize();
     Texture::InstallCharacterSkin();
     return ok;
 }
@@ -84,9 +82,6 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
         HOOK_FUNCTION(Offsets::FUN_CGGAMEUI_SHUTDOWN, CGGameUI_Shutdown_h, CGGameUI_Shutdown_o);
 
         if (!Blips::InstallHooks())
-            return FALSE;
-
-        if (!MtxFilter::InstallHooks())
             return FALSE;
 
         if (!Texture::InstallHooks())
